@@ -1,0 +1,26 @@
+{
+  "project": {"title": "Untitled Film", "language": "English", "runtimeSeconds": 10},
+  "style": {"medium": "stylized-3d", "palette": ["#15203a", "#6d5ef7", "#ffd5a1"]},
+  "characters": [
+    {
+      "id": "hero",
+      "name": "Hero",
+      "appearance": "Stylized figure with a violet coat and short dark hair.",
+      "wardrobe": [{"id": "hero-default", "description": "Violet coat and dark trousers."}],
+      "personality": "Determined and observant.",
+      "voiceId": "hero-voice"
+    }
+  ],
+  "locations": [
+    {
+      "id": "open-stage",
+      "layout": "A wide open stage with a flat floor.",
+      "palette": ["#15203a", "#27324f"],
+      "lighting": "Warm key light from camera right.",
+      "state": "Empty and undamaged."
+    }
+  ],
+  "props": [],
+  "voices": [{"id": "hero-voice", "provider": "placeholder", "description": "Warm adult voice."}],
+  "timeline": []
+}
