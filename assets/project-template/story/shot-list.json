@@ -1,0 +1,20 @@
+{
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "shots": [
+    {
+      "id": "shot-001",
+      "sceneId": "scene-01",
+      "startFrame": 0,
+      "durationFrames": 300,
+      "locationId": "open-stage",
+      "characters": [{"id": "hero", "wardrobeId": "hero-default"}],
+      "action": "The hero walks across the stage.",
+      "camera": {"shot": "wide", "move": "static", "target": "hero"},
+      "lighting": "warm-key",
+      "dialogue": [],
+      "audio": []
+    }
+  ]
+}
