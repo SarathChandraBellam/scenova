@@ -1,0 +1,26 @@
+{
+  "name": "film-project",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "preview": "remotion studio src/index.ts",
+    "render": "remotion render src/index.ts Film out/film.mp4",
+    "validate": "python3 scripts/validate_story.py .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "latest",
+    "@react-three/fiber": "latest",
+    "@remotion/three": "latest",
+    "remotion": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "three": "latest"
+  },
+  "devDependencies": {
+    "@remotion/cli": "latest",
+    "@types/react": "latest",
+    "@types/three": "latest",
+    "typescript": "latest"
+  }
+}
