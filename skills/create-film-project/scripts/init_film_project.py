@@ -21,6 +21,8 @@ def main() -> int:
     shutil.copytree(template, destination, dirs_exist_ok=True)
     validator = Path(__file__).with_name("validate_story.py")
     shutil.copy2(validator, destination / "scripts" / "validate_story.py")
+    synthesizer = Path(__file__).with_name("synthesize_audio.mjs")
+    shutil.copy2(synthesizer, destination / "scripts" / "synthesize_audio.mjs")
     print(destination)
     return 0
 

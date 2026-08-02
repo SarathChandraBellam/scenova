@@ -50,6 +50,10 @@ def main() -> int:
         for character in shot.get("characters", []):
             if character.get("id") not in character_ids:
                 errors.append(f"{label}: unknown character {character.get('id')}")
+        for entry in shot.get("dialogue", []):
+            require(entry, ["characterId", "line", "startFrame", "durationFrames"], f"{label}.dialogue", errors)
+            if entry.get("characterId") not in character_ids:
+                errors.append(f"{label}.dialogue: unknown character {entry.get('characterId')}")
     if errors:
         print("\n".join(errors))
         return 1

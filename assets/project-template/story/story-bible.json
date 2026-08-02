@@ -21,6 +21,6 @@
     }
   ],
   "props": [],
-  "voices": [{"id": "hero-voice", "provider": "placeholder", "description": "Warm adult voice."}],
+  "voices": [{"id": "hero-voice", "provider": "caption", "description": "Warm adult voice, delivered as on-screen captions."}],
   "timeline": []
 }

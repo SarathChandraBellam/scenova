@@ -13,7 +13,9 @@
       "action": "The hero walks across the stage.",
       "camera": {"shot": "wide", "move": "static", "target": "hero"},
       "lighting": "warm-key",
-      "dialogue": [],
+      "dialogue": [
+        {"characterId": "hero", "line": "This ends today.", "startFrame": 60, "durationFrames": 90}
+      ],
       "audio": []
     }
   ]

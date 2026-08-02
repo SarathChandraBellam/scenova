@@ -1,0 +1,14 @@
+{
+  "name": "scenova",
+  "description": "Turn stories into continuity-safe Three.js and Remotion film projects.",
+  "owner": {
+    "name": "Sarath"
+  },
+  "plugins": [
+    {
+      "name": "scenova",
+      "source": "./",
+      "description": "Turn stories into continuity-safe Three.js and Remotion film projects."
+    }
+  ]
+}

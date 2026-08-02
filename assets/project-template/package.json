@@ -6,6 +6,7 @@
     "preview": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts Film out/film.mp4",
     "validate": "python3 scripts/validate_story.py .",
+    "synthesize-audio": "node scripts/synthesize_audio.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
