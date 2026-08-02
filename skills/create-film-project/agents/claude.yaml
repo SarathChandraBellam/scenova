@@ -1,0 +1,6 @@
+interface:
+  display_name: "Scenova"
+  short_description: "Turn stories into editable animated films"
+  default_prompt: "Use the create-film-project skill to turn my story into a consistent animated film project."
+policy:
+  allow_implicit_invocation: true

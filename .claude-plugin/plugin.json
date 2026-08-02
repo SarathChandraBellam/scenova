@@ -1,0 +1,11 @@
+{
+  "name": "scenova",
+  "displayName": "Scenova",
+  "version": "0.1.0",
+  "description": "Turn stories into continuity-safe Three.js and Remotion film projects.",
+  "author": {
+    "name": "Sarath"
+  },
+  "keywords": ["film", "video", "three.js", "remotion", "storytelling"],
+  "skills": "./skills/"
+}
