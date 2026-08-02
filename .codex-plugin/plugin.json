@@ -1,0 +1,23 @@
+{
+  "name": "scenova",
+  "version": "0.1.0",
+  "description": "Turn stories into continuity-safe Three.js and Remotion film projects.",
+  "author": {
+    "name": "Sarath"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Scenova",
+    "shortDescription": "Create editable 3D films from stories.",
+    "longDescription": "Scenova plans a story, preserves character and location continuity, generates a reusable Three.js and Remotion project, prepares dialogue and sound, and renders an editable final film.",
+    "developerName": "Sarath",
+    "category": "Creative",
+    "capabilities": ["Write", "Code generation", "Video production"],
+    "brandColor": "#6D5EF7",
+    "defaultPrompt": [
+      "Turn my story into a 60-second animated film.",
+      "Continue this film with the same characters.",
+      "Revise scene 3 and render the final video."
+    ]
+  }
+}
