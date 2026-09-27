@@ -187,23 +187,110 @@ button{font:inherit;color:inherit}
 .bad{color:#FFA99C}.ok{color:#9FE0CB}
 .enote{margin:16px 0 0;font-size:15.5px;line-height:1.45;color:#B7C7CD}
 
+/* chat blocks: code tool, sub-agents, cache note, approval */
+.think.tool{border-color:#6FB7A6;background:#EDF7F4;color:#1F3F38}
+.think.tool .think-h{color:#2E7A69}
+.code{margin:4px 0 6px;padding:8px 10px;border-radius:8px;background:#17262D;color:#D8E6E2;font:12.5px/1.5 var(--f-mono);white-space:pre;overflow:hidden;min-height:44px}
+.result{font:600 13px/1.3 var(--f-mono);color:#1F5E50}
+.think.agents{border-color:#E39A7E;background:#FDF1EC;color:#4A2B20}
+.think.agents .think-h{color:#B0583A}
+.arow{display:grid;grid-template-columns:1fr auto;gap:10px;padding:3px 0;border-top:1px solid rgba(176,88,58,.16)}
+.arow .st{font:12px/1.5 var(--f-mono);color:#8A5A48;font-variant-numeric:tabular-nums}
+.arow.done .st{color:#2E7A69}
+.meta{margin-top:6px;font:600 11.5px/1.2 var(--f-mono);color:#8A7A2A}
+.approve{align-self:stretch;flex:none;background:#fff;border:1.5px solid #15232A;border-radius:14px;padding:12px 14px;animation:msgIn .35s ease-out}
+.ap-h{display:flex;align-items:center;gap:8px;font:600 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#A35C06;margin-bottom:6px}
+.ap-h::before{content:"";width:8px;height:8px;border-radius:50%;background:#F2A541}
+.ap-body{font-size:15px;line-height:1.45}
+.ap-btns{display:flex;gap:8px;margin-top:10px}
+.ap-b{padding:7px 14px;border-radius:9px;border:1px solid #C9D2CD;font-weight:700;font-size:14px;color:#33443D;transition:transform .15s,background .2s,box-shadow .2s}
+.ap-b.ok{background:#15232A;border-color:#15232A;color:#fff}
+.ap-b.ok.press{transform:scale(.94);background:#2E7A69;border-color:#2E7A69;box-shadow:0 0 0 4px rgba(95,179,161,.35)}
+.ap-done{margin-top:10px;font:600 13px/1.3 var(--f-mono);color:#2E7A69}
+
+/* versus mode */
+.vs{display:grid;grid-template-columns:128px 1fr 1fr;border:1px solid #2A4754;border-radius:12px;overflow:hidden}
+.vs > div{padding:10px 12px;border-top:1px solid #22404C;font-size:15px;line-height:1.35}
+.vs > .vh{border-top:0;display:flex;align-items:center;gap:8px;font:700 17px/1.2 var(--f-display)}
+.vs .vh i{width:12px;height:12px;border-radius:3px;background:var(--c)}
+.vs .rl{font:600 11px/1.35 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#8CA4AE}
+.vs .hl{color:#F2A541;font-weight:700}
+.vs-note{margin:16px 0 0;font-size:17px;line-height:1.45;color:#DCE6E9}
+
+/* code mode */
+.opt{border:1px solid #2A4754;border-radius:12px;padding:12px 14px;background:#0F222B}
+.opt + .opt{margin-top:12px}
+.opt-h{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.opt-h b{font:700 16.5px/1.2 var(--f-display)}
+.tag{flex:none;font:600 11px/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:5px 8px;border-radius:999px}
+.tag.no{background:#50231D;color:#FFA99C}.tag.yes{background:#1E4A3F;color:#9FE0CB}.tag.w{background:#4A3712;color:#F7C77A}
+.huge{font:600 28px/1 var(--f-mono);color:#FFA99C}
+.flow{display:flex;align-items:center;gap:8px}
+.node{border:1px solid #2E4A57;border-radius:10px;padding:8px 10px;font-size:14px;line-height:1.3;background:#132833}
+.node small{display:block;font:11.5px/1.3 var(--f-mono);color:#8CA4AE}
+.node.box{border-style:dashed;border-color:#6FB7A6}
+.node.res{background:#F1E4BE;border-color:#F1E4BE;color:#2F2814;font:600 15px/1.3 var(--f-mono)}
+.flow .ar{color:#8CA4AE}
+.code-stat{margin-top:12px;font-size:16px;color:#DCE6E9}
+.code-stat b,.ag-stat b{color:#F2A541;font-family:var(--f-mono)}
+.tip{margin:12px 0 0;font-size:15px;color:#9FB3BB}
+
+/* agents mode */
+.main-box{display:flex;justify-content:space-between;align-items:center;border:1px solid #2A4754;border-radius:12px;padding:10px 14px;background:#0F222B;font-weight:700}
+.main-box small{font:12px/1 var(--f-mono);color:#8CA4AE;font-weight:400}
+.fan{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.helper{border:1px solid #5B3A30;border-radius:12px;padding:10px 12px;background:#1A2A30}
+.helper h4{margin:0 0 2px;font:700 15px/1.2 var(--f-display);color:#FFC2AD}
+.helper .v{font-size:13.5px;color:#B7C7CD}
+.mbar{height:8px;border-radius:4px;background:#22404C;margin:10px 0 6px;overflow:hidden}
+.mbar b{display:block;height:100%;width:0;background:#FF9F80}
+.hn{font:12px/1.3 var(--f-mono);color:#B7C7CD;font-variant-numeric:tabular-nums}
+.rep{margin-top:8px;font:600 12px/1.3 var(--f-mono);color:#9FE0CB}
+.ag-stat{margin:16px 0 0;font-size:16.5px;color:#DCE6E9}
+.ag-note{margin:8px 0 0;font-size:15px;color:#9FB3BB}
+
+/* cache mode */
+.turn{border:1px solid #2A4754;border-radius:12px;padding:12px 14px;background:#0F222B;margin-bottom:12px}
+.turn-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.turn-h b{font:700 17px/1.2 var(--f-display)}
+.tbar{display:flex;gap:4px;height:34px}
+.tbar .pre{flex:1;min-width:0;display:block;line-height:34px;white-space:nowrap;overflow:hidden;padding:0 10px;border-radius:7px;font-size:13.5px;color:#2B2410;background:repeating-linear-gradient(135deg,#E8D36A 0 8px,#D8C155 8px 16px)}
+.tbar .pre.hit{background:#E8D36A}
+.tbar .new{flex:none;width:46px;display:grid;place-items:center;border-radius:7px;background:#F2A541;color:#1C1407;font:600 12.5px/1 var(--f-mono)}
+.tnote{margin-top:8px;font-size:15px;color:#B7C7CD}
+.tnote b{color:#F2A541}
+.cache-rules{display:grid;gap:6px;font-size:15px;line-height:1.4;color:#B7C7CD}
+.cache-rules b{color:#E4ECEF}
+
+/* human-in-the-loop mode */
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.step{border:1px solid #2A4754;border-radius:12px;padding:10px;text-align:center;font-size:13.5px;line-height:1.3;background:#0F222B;color:#9FB3BB;transition:background .3s,border-color .3s}
+.step b{display:block;font:700 15.5px/1.2 var(--f-display);color:#E4ECEF;margin-bottom:3px}
+.step.human{border-style:dashed}
+.step.cur{border-color:#B8E07A;background:rgba(184,224,122,.13)}
+.chips2{display:flex;flex-wrap:wrap;gap:6px}
+.chips2 span{border:1px solid #2E4A57;border-radius:999px;padding:5px 10px;font-size:14px}
+.dial{margin-top:22px}
+.dial-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#B8E07A,#2A4754)}
+.dial-ends{display:flex;justify-content:space-between;margin-top:6px;font-size:14px;color:#B7C7CD}
+
 /* overlays */
 .ov{position:absolute;inset:0;z-index:5;background:#0E1C24;opacity:0;pointer-events:none}
 .ov-title{display:grid;grid-template-columns:1.25fr 1fr;align-items:center;gap:40px;padding:0 96px;
   background:radial-gradient(800px 500px at 85% 20%,#1D3A47 0%,rgba(29,58,71,0) 65%),#0E1C24}
 .tt-eyebrow{margin:0;font:600 14px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#F2A541}
 .tt-h{margin:18px 0 20px;font:800 96px/.94 var(--f-display);letter-spacing:-.035em;color:#F4F7F7}
-.tt-sub{margin:0;font-size:19px;color:#A9BCC3}
+.tt-sub{margin:0;font-size:18px;line-height:1.5;color:#A9BCC3}
 .tt-grid{display:grid;grid-template-columns:repeat(12,26px);gap:5px;justify-content:center}
 .tt-grid .cell{width:26px;height:26px}
-.ov-recap{padding:64px 56px 0}
-.rc-h{margin:0 0 26px;font:800 58px/1 var(--f-display);letter-spacing:-.03em}
-.rc-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-.rc{background:#122732;border:1px solid #24414F;border-radius:14px;padding:20px 18px 22px}
-.rc i{display:block;width:18px;height:18px;border-radius:4px;background:var(--sw);margin-bottom:16px}
-.rc h3{margin:0 0 8px;font:700 23px/1.1 var(--f-display);letter-spacing:-.01em}
-.rc p{margin:0;font-size:16px;line-height:1.45;color:#C3D2D7}
-.rc-end{display:flex;align-items:center;gap:22px;margin-top:40px}
+.ov-recap{padding:40px 56px 0}
+.rc-h{margin:0 0 18px;font:800 46px/1 var(--f-display);letter-spacing:-.03em}
+.rc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.rc{display:grid;grid-template-columns:16px 1fr;align-items:center;gap:6px 12px;background:#122732;border:1px solid #24414F;border-radius:14px;padding:14px 16px}
+.rc i{display:block;width:16px;height:16px;border-radius:4px;background:var(--sw)}
+.rc h3{margin:0;font:700 21px/1.1 var(--f-display);letter-spacing:-.01em}
+.rc p{grid-column:1/-1;margin:0;font-size:15px;line-height:1.4;color:#C3D2D7}
+.rc-end{display:flex;align-items:center;gap:22px;margin-top:20px}
 .rc-end p{margin:0;font:700 30px/1 var(--f-display)}
 .replay{border:0;border-radius:999px;background:#F2A541;color:#1C1407;font-weight:700;font-size:17px;padding:12px 22px;cursor:pointer}
 
@@ -274,9 +361,9 @@ kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-w
 <body>
 <main class="wrap">
   <header class="intro">
-    <p class="eyebrow">Explainer film · 4:24 · subtitles and music</p>
+    <p class="eyebrow">Explainer film · 7:38 · subtitles and music</p>
     <h1>What the AI Remembers</h1>
-    <p class="dek">Watch Maya's first long chat with an AI assistant, and see what happens on the other side of the screen: tokens, the context window, summarization, compaction, and thinking effort.</p>
+    <p class="dek">Watch Maya's first long chat with an AI assistant, and see what happens on the other side of the screen: tokens, the context window, summarization and compaction, reading files with code, sub-agents, prompt caching, thinking effort, and human in the loop.</p>
   </header>
 
   <section class="player" id="player" aria-label="Explainer film">
@@ -295,7 +382,7 @@ kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-w
           <div class="chat-body" id="chatBody"></div>
           <div class="composer">
             <div class="input" id="input"><span class="ph" id="ph">Message Assistant…</span><span id="typed" hidden></span><span class="caret" id="caret" hidden></span></div>
-            <span class="effort-pill rv" data-at="181">Effort · High</span>
+            <span class="effort-pill rv" data-at="324">Effort · High</span>
             <div class="send" id="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
           </div>
         </div>
@@ -350,16 +437,90 @@ kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-w
             <div class="sm-lost rv" data-at="134.8">Left out: who said what, the exact wording, side conversations.</div>
           </div>
 
+          <div class="mode" id="mode-versus">
+            <div class="vs">
+              <div class="rl"></div><div class="vh s"><i></i>Summarization</div><div class="vh f"><i></i>Compaction</div>
+              <div class="rl rv" data-at="186.7">What it shortens</div><div class="rv" data-at="186.7">Any text: an email thread, a report, an article</div><div class="rv" data-at="186.7">The conversation itself</div>
+              <div class="rl rv" data-at="192.7">The original</div><div class="rv" data-at="192.7">Stays. The summary is <span class="hl">added</span> on top</div><div class="rv" data-at="198.7">Is <span class="hl">replaced</span> by the summary</div>
+              <div class="rl rv" data-at="192.7">The window</div><div class="rv" data-at="192.7">Grows a little</div><div class="rv" data-at="198.7">Shrinks a lot</div>
+              <div class="rl rv" data-at="204.7">When</div><div class="rv" data-at="204.7">When you ask for it</div><div class="rv" data-at="204.7">Automatically when nearly full, or with /compact</div>
+            </div>
+            <p class="vs-note rv" data-at="204.7">Same skill, different job. One is an answer for you. The other is housekeeping for the window.</p>
+          </div>
+
+          <div class="mode" id="mode-code">
+            <div class="opt rv" data-at="216.2">
+              <div class="opt-h"><b>Option A · Paste the file into the window</b><span class="tag no">Won't fit</span></div>
+              <div class="huge">≈ 60,000,000 tokens</div>
+              <div class="small">300 times bigger than the whole window.</div>
+            </div>
+            <div class="opt rv" data-at="222.2">
+              <div class="opt-h"><b>Option B · Run code on the file</b><span class="tag yes">Fits easily</span></div>
+              <div class="flow">
+                <div class="node">sales.csv<small>2M rows · stays outside</small></div><span class="ar">→</span>
+                <div class="node box rv" data-at="224.5">Code runs in a sandbox<small>a separate program</small></div><span class="ar rv" data-at="228.7">→</span>
+                <div class="node res rv" data-at="228.7">$1,284,500</div>
+              </div>
+              <div class="code-stat rv" data-at="234.7">Enters the window: <b>≈ 90 tokens</b> of code and result.</div>
+            </div>
+            <p class="tip rv" data-at="240.7">Good for spreadsheets, logs, databases, and any file too big to read.</p>
+          </div>
+
+          <div class="mode" id="mode-agents">
+            <div class="main-box"><span>Main AI · Maya's window</span><small>hands out 3 tasks</small></div>
+            <div class="lbl" style="margin:12px 0 8px">↓ one task each · a fresh, empty window each</div>
+            <div class="fan" id="fan"></div>
+            <p class="ag-stat rv" data-at="272.2">Maya's window grew by <b>~900</b> tokens. The helpers read <b>124,200</b>.</p>
+            <p class="ag-note rv" data-at="278.7">Trade-off: more tokens in total, and each helper only knows the task it was given.</p>
+          </div>
+
+          <div class="mode" id="mode-cache">
+            <div class="lbl">What gets sent to the AI on each turn</div>
+            <div class="turn rv" data-at="298.7">
+              <div class="turn-h"><b>Turn 1 · "Is it free on the 13th?"</b><span class="tag w">Cache write</span></div>
+              <div class="tbar"><span class="pre">Instructions + chat so far · <span class="cachePre"></span> tokens</span><span class="new">+10</span></div>
+              <div class="tnote rv" data-at="304.7">Saved to the cache. Costs about <b>25% extra</b>, this once.</div>
+            </div>
+            <div class="turn rv" data-at="310.7">
+              <div class="turn-h"><b>Turn 2 · "And the 15th?"</b><span class="tag yes">Cache read</span></div>
+              <div class="tbar"><span class="pre hit">The same <span class="cachePre"></span> tokens, reused</span><span class="new">+16</span></div>
+              <div class="tnote">Costs about <b>10%</b> of the normal price, and starts faster.</div>
+            </div>
+            <div class="cache-rules rv" data-at="316.7">
+              <div><b>Expires</b> after a few minutes with no new turns.</div>
+              <div><b>Breaks</b> when something early in the window changes. Everything after that point is written again.</div>
+            </div>
+          </div>
+
+          <div class="mode" id="mode-hitl">
+            <div class="lbl">Human in the loop</div>
+            <div class="loop">
+              <div class="step"><b>AI drafts</b>the email</div>
+              <div class="step"><b>AI pauses</b>and asks first</div>
+              <div class="step human"><b>Maya reviews</b>approve, edit, or cancel</div>
+              <div class="step"><b>AI sends</b>only after a yes</div>
+            </div>
+            <div class="rv" data-at="395.2" style="margin-top:22px">
+              <div class="lbl">Worth a human check</div>
+              <div class="chips2"><span>Sending messages</span><span>Spending money</span><span>Deleting files</span><span>Publishing</span><span>Anything hard to undo</span></div>
+            </div>
+            <div class="dial rv" data-at="401.2">
+              <div class="lbl">How often the AI asks is usually your choice</div>
+              <div class="dial-track"></div>
+              <div class="dial-ends"><span>Every step</span><span>Only risky steps</span></div>
+            </div>
+          </div>
+
           <div class="mode" id="mode-effort">
             <div class="lbl">Thinking effort</div>
             <div class="seg"><i class="knob" id="knob"></i><span data-e="0">Low</span><span data-e="1">Medium</span><span data-e="2">High</span></div>
             <div class="erows">
-              <div class="erow head rv" data-at="204.7"><span>Effort</span><span>Thinking tokens</span><span>Time</span><span>Result on Maya's schedule</span></div>
-              <div class="erow rv" data-at="204.7" data-e="0"><span class="n">Low</span><span class="tb"><b style="--w:6px"></b>~400</span><span class="tm">3 s</span><span class="bad">Missed the Tuesday clash</span></div>
-              <div class="erow rv" data-at="207.5" data-e="1"><span class="n">Medium</span><span class="tb"><b style="--w:26px"></b>~2,500</span><span class="tm">9 s</span><span>Found the clash</span></div>
-              <div class="erow rv" data-at="210.2" data-e="2"><span class="n">High</span><span class="tb"><b style="--w:92px"></b>~9,000</span><span class="tm">22 s</span><span class="ok">Found it and re-checked all 14 tasks</span></div>
+              <div class="erow head rv" data-at="347.7"><span>Effort</span><span>Thinking tokens</span><span>Time</span><span>Result on Maya's schedule</span></div>
+              <div class="erow rv" data-at="347.7" data-e="0"><span class="n">Low</span><span class="tb"><b style="--w:6px"></b>~400</span><span class="tm">3 s</span><span class="bad">Missed the Tuesday clash</span></div>
+              <div class="erow rv" data-at="350.5" data-e="1"><span class="n">Medium</span><span class="tb"><b style="--w:26px"></b>~2,500</span><span class="tm">9 s</span><span>Found the clash</span></div>
+              <div class="erow rv" data-at="353.2" data-e="2"><span class="n">High</span><span class="tb"><b style="--w:92px"></b>~9,000</span><span class="tm">22 s</span><span class="ok">Found it and re-checked all 14 tasks</span></div>
             </div>
-            <p class="enote rv" data-at="216.2">Scratch work takes room in the window while the model works. It is usually cleared once the answer is written.</p>
+            <p class="enote rv" data-at="359.2">Scratch work takes room in the window while the model works. It is usually cleared once the answer is written.</p>
           </div>
         </div>
 
@@ -367,7 +528,7 @@ kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-w
           <div>
             <p class="tt-eyebrow">A short film in one conversation</p>
             <h2 class="tt-h">What the AI Remembers</h2>
-            <p class="tt-sub">Tokens · Context windows · Summarization · Compaction · Thinking effort</p>
+            <p class="tt-sub">Tokens · Context windows · Summarization · Compaction · Code tools · Sub-agents · Caching · Thinking effort · Human in the loop</p>
           </div>
           <div class="tt-grid" id="ttGrid"></div>
         </div>
@@ -375,13 +536,17 @@ kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-w
         <div class="ov ov-recap" id="ovRecap">
           <h2 class="rc-h">Recap</h2>
           <div class="rc-cards">
-            <div class="rc rv" data-at="233.7" style="--sw:#F2A541"><i></i><h3>Token</h3><p>A small chunk of text. About 100 tokens make 75 English words.</p></div>
-            <div class="rc rv" data-at="239" style="--sw:#7CC4E4"><i></i><h3>Context window</h3><p>Everything the AI can see at once. Fixed size. Anything outside it doesn't exist for the model.</p></div>
-            <div class="rc rv" data-at="244" style="--sw:#F1E4BE"><i></i><h3>Summarization</h3><p>Rewriting something long as something short, keeping the key facts.</p></div>
-            <div class="rc rv" data-at="246.3" style="--sw:#5FB3A1"><i></i><h3>Compaction</h3><p>Summarizing the older conversation to free up room. Small details can be lost.</p></div>
-            <div class="rc rv" data-at="249" style="--sw:#C58BE0"><i></i><h3>Thinking effort</h3><p>How much step-by-step work happens before the answer. More effort: slower, more careful.</p></div>
+            <div class="rc rv" data-at="411.2" style="--sw:#F2A541"><i></i><h3>Token</h3><p>A small chunk of text. About 100 tokens make 75 English words.</p></div>
+            <div class="rc rv" data-at="415.7" style="--sw:#7CC4E4"><i></i><h3>Context window</h3><p>Everything the AI can see at once. It has a fixed size.</p></div>
+            <div class="rc rv" data-at="420.2" style="--sw:#F1E4BE"><i></i><h3>Summarization</h3><p>Shortening text you ask about. The original stays.</p></div>
+            <div class="rc rv" data-at="422.5" style="--sw:#5FB3A1"><i></i><h3>Compaction</h3><p>Swapping the old chat for its summary to free up room.</p></div>
+            <div class="rc rv" data-at="425.2" style="--sw:#9DB7FF"><i></i><h3>Code on files</h3><p>Big files stay outside. Only the code and the answer come in.</p></div>
+            <div class="rc rv" data-at="429.7" style="--sw:#FF9F80"><i></i><h3>Sub-agents</h3><p>Helpers with fresh windows that send back short reports.</p></div>
+            <div class="rc rv" data-at="434.2" style="--sw:#E8D36A"><i></i><h3>Prompt caching</h3><p>Reusing the unchanged start of the window. Write once, read cheaply.</p></div>
+            <div class="rc rv" data-at="438.7" style="--sw:#C58BE0"><i></i><h3>Thinking effort</h3><p>How much step-by-step work happens before the answer.</p></div>
+            <div class="rc rv" data-at="443.2" style="--sw:#B8E07A"><i></i><h3>Human in the loop</h3><p>You approve the steps that are risky or can't be undone.</p></div>
           </div>
-          <div class="rc-end rv" data-at="256"><p>Thanks for watching.</p><button class="replay" id="replay" type="button">Watch again</button></div>
+          <div class="rc-end rv" data-at="447.7"><p>Thanks for watching.</p><button class="replay" id="replay" type="button">Watch again</button></div>
         </div>
       </div>
 
@@ -391,8 +556,8 @@ kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-w
 
     <div class="controls">
       <button class="cbtn" id="playBtn" type="button" aria-label="Play"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor"/></svg></button>
-      <span class="time" id="time">0:00 / 4:24</span>
-      <div class="seekwrap"><div class="ticks" id="ticks"></div><input type="range" id="seek" min="0" max="264" step="0.1" value="0" aria-label="Seek"></div>
+      <span class="time" id="time">0:00 / 7:38</span>
+      <div class="seekwrap"><div class="ticks" id="ticks"></div><input type="range" id="seek" min="0" max="458" step="0.1" value="0" aria-label="Seek"></div>
       <button class="cbtn txt" id="speedBtn" type="button" aria-label="Playback speed">1×</button>
       <button class="cbtn txt" id="ccBtn" type="button" aria-pressed="true" aria-label="Subtitles">CC</button>
       <button class="cbtn" id="muteBtn" type="button" aria-pressed="false" aria-label="Mute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="volIcon"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
@@ -433,21 +598,26 @@ const mmss = (s) => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) 
 const setText = (el, s) => { if (el._s !== s) { el.textContent = s; el._s = s; } };
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
 
-const DUR = 264;
+const DUR = 458;
 const WINDOW = 200000;
 const INSTR = 12000;
 const COMPACT_START = 146, COMPACT_END = 148.5;
 
 /* ---------------- script ---------------- */
 const CHAPTERS = [
-  { t: 0,     n: '',   name: 'Opening',            blurb: 'How does an AI keep track of a conversation?' },
-  { t: 10,    n: '01', name: 'Tokens',             blurb: 'The small pieces of text an AI reads and writes.' },
-  { t: 42,    n: '02', name: 'The context window', blurb: 'A fixed-size desk that holds everything the AI can see.' },
-  { t: 85.5,  n: '03', name: 'Filling up',         blurb: 'Three big documents land on the desk at once.' },
-  { t: 115.5, n: '04', name: 'Summarization',      blurb: 'Turning something long into something short.' },
-  { t: 140,   n: '05', name: 'Compaction',         blurb: 'Summarizing the conversation itself to make room.' },
-  { t: 181,   n: '06', name: 'Thinking effort',    blurb: 'How much scratch work happens before an answer.' },
-  { t: 228,   n: '07', name: 'Recap',              blurb: 'Five ideas on one screen.' },
+  { t: 0,     n: '',   name: 'Opening',                blurb: 'How does an AI keep track of a conversation?' },
+  { t: 10,    n: '01', name: 'Tokens',                 blurb: 'The small pieces of text an AI reads and writes.' },
+  { t: 42,    n: '02', name: 'The context window',     blurb: 'A fixed-size desk that holds everything the AI can see.' },
+  { t: 85.5,  n: '03', name: 'Filling up',             blurb: 'Three big documents land on the desk at once.' },
+  { t: 115.5, n: '04', name: 'Summarization',          blurb: 'Turning something long into something short.' },
+  { t: 140,   n: '05', name: 'Compaction',             blurb: 'Summarizing the conversation itself to make room.' },
+  { t: 181,   n: '06', name: 'Summary vs. compaction', blurb: 'Same skill, different job: one adds, the other replaces.' },
+  { t: 210,   n: '07', name: 'Reading files with code', blurb: 'Big files stay outside the window. Only answers come in.' },
+  { t: 247,   n: '08', name: 'Sub-agents',             blurb: 'Helpers with their own fresh windows.' },
+  { t: 286,   n: '09', name: 'Prompt caching',         blurb: 'Cache writes, cache reads, and why repeat turns get cheaper.' },
+  { t: 324,   n: '10', name: 'Thinking effort',        blurb: 'How much scratch work happens before an answer.' },
+  { t: 371,   n: '11', name: 'Human in the loop',      blurb: 'The AI asks before doing anything risky.' },
+  { t: 406,   n: '12', name: 'Recap',                  blurb: 'Nine ideas on one screen.' },
 ];
 
 const CUES = [
@@ -481,20 +651,53 @@ const CUES = [
   [164.7, 170, "The trade-off: exact wording and small details from earlier may be gone."],
   [170.2, 175.5, "Tip: keep key facts in a notes file or project instructions, so they load every time."],
   [175.7, 180.8, "Many tools compact automatically. Some let you run it yourself, with a command like /compact."],
-  [181.5, 186.5, "One last idea. Maya asks something genuinely hard."],
-  [186.7, 192.5, "Before answering, many models can think: work through the problem step by step."],
-  [192.7, 198.5, "That reasoning uses thinking tokens, like scratch paper you usually don't see."],
-  [198.7, 204.5, "Thinking effort sets how much scratch paper the model is allowed to use."],
-  [204.7, 210, "Low effort answers fast. That's right for simple questions."],
-  [210.2, 216, "High effort is slower and uses more tokens, but catches mistakes on hard problems."],
-  [216.2, 221.8, "Here, careful thinking caught that Priya was booked twice on Tuesday."],
-  [222, 227.8, "Match the effort to the task: quick for easy things, deep for tricky ones."],
-  [229, 233.5, "Let's recap."],
-  [233.7, 238.8, "Tokens: the small pieces of text an AI reads and writes."],
-  [239, 243.8, "Context window: everything it can see at once. It has a fixed size."],
-  [244, 248.8, "Summarization and compaction: shrinking older material to make room."],
-  [249, 253.8, "Thinking effort: how much work happens before the answer."],
-  [254, 259.5, "Now you know what's happening on the other side of the chat."],
+  [181.5, 186.5, "Maya asks a sharp question: aren't these the same thing?"],
+  [186.7, 192.5, "Both use the same skill: turning something long into something short."],
+  [192.7, 198.5, "A summary you ask for is added to the chat. The original stays, so the window grows."],
+  [198.7, 204.5, "Compaction replaces the old conversation with its summary, so the window shrinks."],
+  [204.7, 209.8, "Summarization is an answer for you. Compaction is housekeeping for the window."],
+  [211, 216, "Now Maya shares a much bigger file: two million rows of sales data."],
+  [216.2, 222, "Pasted in as text, that would be around 60 million tokens. It could never fit."],
+  [222.2, 228.5, "So instead of reading the file, the AI writes a little code, and a separate program runs it."],
+  [228.7, 234.5, "The file stays outside the window. Only the code and its answer go in."],
+  [234.7, 240.5, "A few dozen tokens instead of millions. Faster, cheaper, and the math is exact."],
+  [240.7, 246.5, "Tip: for spreadsheets, logs, and big data, ask the AI to analyze with code."],
+  [248, 253, "Big research jobs can flood a window with pages the AI only needs once."],
+  [253.2, 259, "So the main AI can hand work to sub-agents: helpers that each start with a fresh, empty window."],
+  [259.2, 265.5, "Each helper reads what it needs in its own window, working in parallel with the others."],
+  [265.7, 272, "When they finish, each sends back a short report. Their long notes stay behind."],
+  [272.2, 278.5, "Maya's window grew by about 900 tokens instead of 124,000."],
+  [278.7, 285.5, "The trade-off: helpers use more tokens overall, and they only know what they're told."],
+  [287, 292.5, "Here's something hidden: on every turn, the whole window is sent to the AI again, from the top."],
+  [292.7, 298.5, "Processing the same instructions and history over and over would be slow and costly."],
+  [298.7, 304.5, "So the service keeps a cache: a saved copy of the start of the window that hasn't changed."],
+  [304.7, 310.5, "Saving it the first time is a cache write. It costs a little extra, once."],
+  [310.7, 316.5, "Later turns are cache reads: the saved part is reused, faster, at about a tenth of the price."],
+  [316.7, 323.5, "Caches expire after a few minutes of quiet. And changing something early means writing it again."],
+  [324.5, 329.5, "One more idea. Maya asks something genuinely hard."],
+  [329.7, 335.5, "Before answering, many models can think: work through the problem step by step."],
+  [335.7, 341.5, "That reasoning uses thinking tokens, like scratch paper you usually don't see."],
+  [341.7, 347.5, "Thinking effort sets how much scratch paper the model is allowed to use."],
+  [347.7, 353, "Low effort answers fast. That's right for simple questions."],
+  [353.2, 359, "High effort is slower and uses more tokens, but catches mistakes on hard problems."],
+  [359.2, 364.8, "Here, careful thinking caught that Priya was booked twice on Tuesday."],
+  [365, 370.8, "Match the effort to the task: quick for easy things, deep for tricky ones."],
+  [372, 377, "Last step: Maya asks the AI to email the plan to her whole team."],
+  [377.2, 383, "An email can't be unsent. So the AI stops and asks before acting."],
+  [383.2, 389, "This is human in the loop: a person checks the work at the moments that matter."],
+  [389.2, 395, "Maya reads the draft and approves it. Only then does the email go out."],
+  [395.2, 401, "The AI does the busy work. You keep control of anything risky or permanent."],
+  [401.2, 405.8, "Many tools let you choose how often they ask: every step, or only for risky ones."],
+  [407, 411, "Let's recap."],
+  [411.2, 415.5, "Tokens: the small pieces of text an AI reads and writes."],
+  [415.7, 420, "Context window: everything it can see at once. It has a fixed size."],
+  [420.2, 425, "Summarization shortens text on request. Compaction swaps the old chat for a summary to free room."],
+  [425.2, 429.5, "Code: work on big files outside the window, and bring back only the answer."],
+  [429.7, 434, "Sub-agents: helpers with fresh windows that return short reports."],
+  [434.2, 438.5, "Caching: the unchanged start of the window is saved and reused, so repeat turns are faster and cheaper."],
+  [438.7, 443, "Thinking effort: how much work happens before the answer."],
+  [443.2, 447.5, "Human in the loop: you approve the steps that matter."],
+  [447.7, 453, "Now you know what's happening on the other side of the chat."],
 ];
 
 // user message: typing starts at t, bubble appears at `sent`
@@ -518,18 +721,36 @@ const MSGS = [
   { who: 'summary', t: COMPACT_END },
   U(159.2, 2.1, 'Wait, do you still remember the launch date?', 11),
   A(162.4, 5.4, "Yes: March 14. It's in the summary of our earlier chat. I no longer have the exact wording of page 12, so paste it again if you need the details.", 40),
-  U(181.4, 3, 'Last one: plan launch week for 6 people and 14 tasks. Nobody can be double-booked.', 22),
-  { who: 'ai', t: 185, ss: 208.3, se: 214.2, tokens: 32,
+  U(182, 2.4, 'So is compaction just a summary?', 8),
+  A(185.6, 6.5, 'Same skill, different job. When I summarized the emails, my summary was added and the emails stayed. Compaction swapped our old chat for its summary to free up space.', 45),
+  U(211.2, 3, "Here's all our sales data. What was total revenue in March?", 14, { att: [['sales.csv', '2M rows']] }),
+  { who: 'ai', t: 215.2, ss: 231, se: 236, tokens: 130,
+    text: "March revenue was $1,284,500. I didn't read the file into my window. I ran code on it, and only the result came back.",
+    tool: { start: 216, codeStart: 222.4, codeEnd: 226.5, resultAt: 228.7,
+      code: 'df = pd.read_csv("sales.csv")\ndf[df.month == "2025-03"].revenue.sum()', result: '→ 1284500.0' } },
+  U(248.3, 3, 'Can you compare three venues for the launch party?', 11),
+  { who: 'ai', t: 252.2, ss: 268.6, se: 274.4, tokens: 980, agents: { start: 252.8 },
+    text: "Harbor Hall is the best fit: it holds 150 people, costs $6,200, and is free on March 14. Each helper's short report is below." },
+  U(287.2, 2.2, 'Is Harbor Hall free on March 13 too?', 10),
+  A(290.4, 3, "Yes, it's open on the 13th as well.", 11, { meta: 'write' }),
+  U(304.8, 1.6, 'And the 15th?', 5),
+  A(307.4, 2.8, 'The 15th is already booked.', 7, { meta: 'read' }),
+  U(324.4, 3, 'Next: plan launch week for 6 people and 14 tasks. Nobody can be double-booked.', 22),
+  { who: 'ai', t: 328, ss: 351.3, se: 357.2, tokens: 32,
     text: "Here's a plan with no overlaps. I moved launch copy to Wednesday at 2 pm, because Priya was booked twice on Tuesday morning.",
-    thinking: { start: 185.4, end: 207.6, drop: 215, tokens: 9000, lines: [
+    thinking: { start: 328.4, end: 350.6, drop: 358, tokens: 9000, lines: [
       "List each person's tasks and time slots.",
       'Priya: design review Tue 10:00, launch copy Tue 10:00. Conflict.',
       'Sam is free Wednesday morning and could take QA sign-off.',
       'Move launch copy to Wed 14:00. Priya is free then.',
       'Re-check all 14 tasks: nobody is in two places at once. ✓',
     ] } },
+  U(372.3, 2.6, 'Perfect. Email the final plan to the whole team.', 12),
+  A(375.6, 2.4, "Here's the draft. I'll send it once you approve.", 14),
+  { who: 'approve', t: 379.5, press: 390.5, done: 392, tokens: 160 },
 ];
 const SUMMARY_TOKENS = 4200;
+const HELPERS = [['Harbor Hall', 38200, 254.5, 264.5], ['The Glasshouse', 45900, 254.9, 266], ['Pier 9 Loft', 40100, 255.3, 267.5]];
 
 /* ---------------- token accounting ---------------- */
 function usage(t) {
@@ -539,6 +760,7 @@ function usage(t) {
     let f;
     if (m.who === 'user') f = t >= m.sent ? 1 : 0;
     else if (m.who === 'ai') f = prog(t, m.ss, m.se);
+    else if (m.who === 'approve') f = t >= m.t ? 1 : 0;
     else continue;
     const keep = m.old ? 1 - cp : 1;
     conv += m.tokens * f * keep;
@@ -556,6 +778,9 @@ const before = usage(COMPACT_START - 0.05), after = usage(150);
 const sysMsg = MSGS.find((m) => m.who === 'sys');
 sysMsg.text = `Context window ${Math.round(before.total / WINDOW * 100)}% full · compacting conversation…`;
 sysMsg.textAfter = `Conversation compacted · ${fmt(before.total)} → ${fmt(after.total)} tokens`;
+const cachePrefix = Math.round(usage(290.3).total / 100) * 100;
+document.querySelectorAll('.cachePre').forEach((e) => { e.textContent = fmt(cachePrefix); });
+for (const m of MSGS) if (m.meta) m.metaText = m.meta === 'write' ? `Cache write · ${fmt(cachePrefix)} tokens saved` : `Cache read · ${fmt(cachePrefix)} tokens reused`;
 
 const CALLOUTS = [
   [42, 59.5, 'Each square is <b>1,000 tokens</b>. The blue-grey squares are instructions the app gives the AI before you type anything.'],
@@ -567,7 +792,7 @@ const CALLOUTS = [
   [146, 159, 'Compaction: the old messages and files are replaced by <b>one short summary</b> (cream squares).'],
   [159, 999, `From <b>${fmt(before.total)}</b> down to <b>${fmt(after.total)}</b> tokens. The key facts survived. The full documents did not.`],
 ];
-const MODES = [[0, 'tokens'], [42, 'grid'], [115.5, 'summary'], [140, 'grid'], [181, 'effort']];
+const MODES = [[0, 'tokens'], [42, 'grid'], [115.5, 'summary'], [140, 'grid'], [181, 'versus'], [210, 'code'], [247, 'agents'], [286, 'cache'], [324, 'effort'], [371, 'hitl']];
 
 /* ---------------- build the stage ---------------- */
 const chatBody = $('#chatBody');
@@ -603,11 +828,48 @@ for (const m of MSGS) {
       b.append(th);
       m.think = th;
     }
+    if (m.tool) {
+      const tb = el('div', 'think tool');
+      const h = el('div', 'think-h');
+      m.toolHead = el('span');
+      h.append(m.toolHead, el('span', null, 'sandbox'));
+      m.codeEl = el('div', 'code');
+      m.resEl = el('div', 'result', m.tool.result);
+      tb.append(h, m.codeEl, m.resEl);
+      b.append(tb);
+      m.toolEl = tb;
+    }
+    if (m.agents) {
+      const ab = el('div', 'think agents');
+      const h = el('div', 'think-h');
+      m.agHead = el('span');
+      h.append(m.agHead, el('span', null, 'fresh windows'));
+      ab.append(h);
+      m.agRows = HELPERS.map(([name, read, s0, e0], i) => {
+        const r = el('div', 'arow'), st = el('span', 'st');
+        r.append(el('span', null, `Helper ${i + 1} · ${name}`), st);
+        ab.append(r);
+        return { r, st, read, s: s0, e: e0 };
+      });
+      b.append(ab);
+      m.agEl = ab;
+    }
     m.dots = el('div', 'dots');
     m.dots.append(el('span'), el('span'), el('span'));
     m.txt = el('p', 'txt');
     b.append(m.dots, m.txt);
+    if (m.meta) { m.metaEl = el('div', 'meta'); b.append(m.metaEl); }
     node.append(b);
+  } else if (m.who === 'approve') {
+    node = el('div', 'approve');
+    node.innerHTML = '<div class="ap-h">Approval needed</div>'
+      + '<div class="ap-body"><b>Send email</b> to the launch team (14 people)<br>Subject: Launch week plan</div>'
+      + '<div class="ap-btns"><span class="ap-b ok">Approve</span><span class="ap-b">Edit</span><span class="ap-b">Cancel</span></div>'
+      + '<div class="ap-done">✓ Approved by Maya · sent to 14 people</div>';
+    m.apH = node.querySelector('.ap-h');
+    m.apOk = node.querySelector('.ap-b.ok');
+    m.apBtns = node.querySelector('.ap-btns');
+    m.apDone = node.querySelector('.ap-done');
   } else if (m.who === 'sys') {
     node = el('div', 'sys', m.text);
   } else {
@@ -657,8 +919,19 @@ widths.forEach((w, i) => {
   docLines.append(l);
 });
 
+const fan = $('#fan');
+const helperEls = HELPERS.map(([name, , s0, e0], i) => {
+  const c = el('div', 'helper rv'); c.dataset.at = String(253.2 + i * 0.4);
+  const bar = el('div', 'mbar'), fill = el('b'); bar.append(fill);
+  const hn = el('div', 'hn');
+  const rp = el('div', 'rep rv', '↑ report · 300 tokens'); rp.dataset.at = String(e0);
+  c.append(el('h4', null, `Helper ${i + 1}`), el('div', 'v', name), bar, hn, rp);
+  fan.append(c);
+  return { fill, hn };
+});
+const hitlSteps = [...document.querySelectorAll('.step')];
 const reveal = [...document.querySelectorAll('[data-at]')].map((e) => ({ e, at: +e.dataset.at }));
-const modes = Object.fromEntries(['tokens', 'grid', 'summary', 'effort'].map((k) => [k, $('#mode-' + k)]));
+const modes = Object.fromEntries(['tokens', 'grid', 'summary', 'versus', 'code', 'agents', 'cache', 'effort', 'hitl'].map((k) => [k, $('#mode-' + k)]));
 const barParts = [...document.querySelectorAll('#roBar i')];
 const segSpans = [...document.querySelectorAll('.seg span')];
 const eRows = [...document.querySelectorAll('.erow[data-e]')];
@@ -785,11 +1058,15 @@ const Sound = (() => {
 })();
 
 const EVENTS = [[0.4, 'chime'], [89.1, 'stack'], [143.4, 'alert'], [COMPACT_START, 'whoosh'], [COMPACT_END, 'chime'],
-  [233.7, 'tick'], [239, 'tick'], [244, 'tick'], [246.3, 'tick'], [249, 'tick'], [256, 'chime']];
+  [411.2, 'tick'], [415.7, 'tick'], [420.2, 'tick'], [422.5, 'tick'], [425.2, 'tick'], [429.7, 'tick'], [434.2, 'tick'],
+  [438.7, 'tick'], [443.2, 'tick'], [447.7, 'chime']];
 for (const m of MSGS) {
   if (m.who === 'user') EVENTS.push([m.sent, 'send']);
   if (m.who === 'ai') EVENTS.push([m.ss, 'recv']);
   if (m.thinking) m.thLines.forEach((li) => EVENTS.push([li._start, 'tick']));
+  if (m.tool) EVENTS.push([m.tool.resultAt, 'stack']);
+  if (m.agents) HELPERS.forEach((h) => EVENTS.push([h[3], 'tick']));
+  if (m.who === 'approve') EVENTS.push([m.t, 'alert'], [m.press, 'send'], [m.done, 'chime']);
 }
 
 /* ---------------- render one frame from time t ---------------- */
@@ -814,7 +1091,8 @@ function renderChat(t) {
     if (m.who === 'ai') {
       const th = m.thinking;
       const answering = t >= m.ss;
-      m.dots.hidden = answering || (th && t >= th.start);
+      const blockStart = th ? th.start : m.tool ? m.tool.start : m.agents ? m.agents.start : Infinity;
+      m.dots.hidden = answering || t >= blockStart;
       m.txt.hidden = !answering;
       if (answering) setText(m.txt, m.text.slice(0, Math.ceil(m.text.length * prog(t, m.ss, m.se))));
       if (th) {
@@ -828,6 +1106,32 @@ function renderChat(t) {
           if (!li.hidden) setText(li, li._full.slice(0, Math.ceil(li._full.length * prog(t, li._start, li._start + 2.6))));
         }
       }
+      if (m.tool) {
+        const tl = m.tool, done = t >= tl.resultAt;
+        m.toolEl.hidden = t < tl.start;
+        m.toolEl.classList.toggle('done', answering);
+        setText(m.toolHead, done ? 'Ran code in a sandbox' : t < tl.codeEnd ? 'Writing code…' : 'Running code…');
+        setText(m.codeEl, tl.code.slice(0, Math.ceil(tl.code.length * prog(t, tl.codeStart, tl.codeEnd))));
+        m.resEl.hidden = !done;
+      }
+      if (m.agents) {
+        m.agEl.hidden = t < m.agents.start;
+        m.agEl.classList.toggle('done', answering);
+        setText(m.agHead, t >= HELPERS[2][3] ? '3 sub-agents finished' : '3 sub-agents working');
+        for (const r of m.agRows) {
+          const d = t >= r.e;
+          r.r.hidden = t < r.s - 1.2;
+          r.r.classList.toggle('done', d);
+          setText(r.st, d ? '✓ report · 300 tokens' : `reading · ${fmt(r.read * prog(t, r.s, r.e))} tokens`);
+        }
+      }
+      if (m.metaEl) { m.metaEl.hidden = t < m.se; setText(m.metaEl, m.metaText); }
+    } else if (m.who === 'approve') {
+      const done = t >= m.done;
+      m.apOk.classList.toggle('press', t >= m.press);
+      m.apBtns.hidden = done;
+      m.apDone.hidden = !done;
+      setText(m.apH, done ? 'Approved' : 'Approval needed');
     } else if (m.who === 'sys') {
       const done = t >= m.after;
       setText(n, done ? m.textAfter : m.text);
@@ -878,7 +1182,7 @@ function render(t) {
 
   const titleO = 1 - prog(t, 8.8, 10.2);
   const ovT = $('#ovTitle'); ovT.style.opacity = titleO; ovT.hidden = titleO <= 0;
-  const recapO = prog(t, 228, 229.2);
+  const recapO = prog(t, 406, 407.2);
   const ovR = $('#ovRecap'); ovR.style.opacity = recapO; ovR.hidden = recapO <= 0;
   ovR.style.pointerEvents = recapO > 0.9 ? 'auto' : 'none';
 
@@ -894,16 +1198,24 @@ function render(t) {
   const html = co ? co[2] : '';
   if ($callout._h !== html) { $callout.innerHTML = html; $callout._h = html; }
 
-  const eff = t < 204.7 ? 2 : t < 207.5 ? 0 : t < 210.2 ? 1 : 2;
+  const eff = t < 347.7 ? 2 : t < 350.5 ? 0 : t < 353.2 ? 1 : 2;
   $('#knob').style.transform = `translateX(${eff * 120}px)`;
   segSpans.forEach((s, i) => s.classList.toggle('cur', i === eff));
-  eRows.forEach((r, i) => r.classList.toggle('cur', t >= 204.7 && i === eff));
+  eRows.forEach((r, i) => r.classList.toggle('cur', t >= 347.7 && i === eff));
+
+  HELPERS.forEach(([, read, s0, e0], i) => {
+    const got = read * prog(t, s0, e0);
+    helperEls[i].fill.style.width = (got / WINDOW * 100).toFixed(1) + '%';
+    setText(helperEls[i].hn, `${fmt(got)} / 200,000 tokens`);
+  });
+  const step = t < 379.5 ? 0 : t < 383.2 ? 1 : t < 392 ? 2 : 3;
+  hitlSteps.forEach((s0, i) => s0.classList.toggle('cur', t >= 375.6 && i === step));
 
   const cue = CUES.find(([s, e]) => t >= s && t < e);
   $subText.hidden = !captions || !cue;
   if (cue) setText($subText, cue[2]);
 
-  Sound.update(pct, prog(t, 0, 2.5) * (1 - prog(t, 258, 263.5)), t >= 10 && t < 254);
+  Sound.update(pct, prog(t, 0, 2.5) * (1 - prog(t, 452, 457.5)), t >= 10 && t < 448);
 
   const seek = $('#seek');
   if (document.activeElement !== seek || !scrubbing) seek.value = t.toFixed(1);
