@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What the AI Remembers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#E7ECED; --surface:#F5F7F7; --ink:#12222A; --muted:#4E636C; --line:#C6D2D5;
+  --accent:#A35C06; --focus:#C0730F;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0A1419; --surface:#10212A; --ink:#E1EAED; --muted:#92A7B0; --line:#21363F;
+    --accent:#F2A541; --focus:#F2A541; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0A1419; --surface:#10212A; --ink:#E1EAED; --muted:#92A7B0; --line:#21363F;
+  --accent:#F2A541; --focus:#F2A541; color-scheme:dark;
+}
+[hidden]{display:none!important}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+@media (min-width:720px){.wrap{padding-inline:28px}}
+.eyebrow{margin:0;font:600 12.5px/1.4 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.intro h1{font:800 clamp(34px,5.4vw,58px)/1.02 var(--f-display);letter-spacing:-.025em;margin:.18em 0 .3em;text-wrap:balance}
+.dek{margin:0;max-width:62ch;color:var(--muted);font-size:17px}
+
+/* ---------- player (always dark, like a screening room) ---------- */
+.player{margin-top:24px;border-radius:16px;overflow:hidden;background:#0B161C;box-shadow:0 30px 60px -30px rgba(5,15,20,.55)}
+.screen{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#0E1C24;cursor:pointer;container-type:size}
+.player:fullscreen{display:flex;flex-direction:column;border-radius:0;background:#000}
+.player:fullscreen .screen{flex:1;aspect-ratio:auto}
+.player:-webkit-full-screen{display:flex;flex-direction:column;border-radius:0;background:#000}
+.player:-webkit-full-screen .screen{flex:1;aspect-ratio:auto}
+
+.stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;overflow:hidden;
+  background:radial-gradient(900px 520px at 78% -8%,#1B3542 0%,rgba(27,53,66,0) 62%),#0E1C24;
+  color:#E4ECEF;font:17px/1.4 var(--f-body)}
+.topbar{position:absolute;left:40px;right:40px;top:20px;height:34px;display:flex;justify-content:space-between;align-items:center}
+.chap{font:700 21px/1 var(--f-display);letter-spacing:-.005em}
+.chap .num{font:600 15px/1 var(--f-mono);color:#F2A541;margin-right:12px;letter-spacing:.04em}
+.brand{font:600 12.5px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#7F97A1}
+
+/* chat window */
+.chat{position:absolute;left:40px;top:72px;width:580px;height:540px;background:#EDF1EC;border-radius:18px;color:#15232A;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 34px 60px -24px rgba(0,0,0,.6)}
+.chat-head{height:56px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid #D3DCD6}
+.who{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 13px/1 var(--f-mono);flex:none}
+.who.m{background:#F5C77E;color:#3B2606}
+.who.a{background:#1D3A48;color:#EAF2F4}
+.ch-title{font-weight:700;font-size:16.5px;line-height:1.1}
+.ch-sub{font-size:13px;color:#61716B}
+.chat-body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:14px 18px;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 44px);mask-image:linear-gradient(to bottom,transparent 0,#000 44px)}
+.msg{display:flex;gap:10px;max-width:88%;flex:none;animation:msgIn .35s ease-out}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}}
+.msg.user{align-self:flex-end}
+.msg.ai{align-self:flex-start}
+.bubble{padding:10px 14px;border-radius:16px;font-size:16.5px;line-height:1.42}
+.user .bubble{background:#F5C77E;border-bottom-right-radius:5px}
+.ai .bubble{background:#fff;border:1px solid #D7DFDA;border-bottom-left-radius:5px;min-width:64px}
+.txt{margin:0;white-space:pre-line}
+.atts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.att{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.7);border-radius:8px;padding:4px 9px;font:12.5px/1.3 var(--f-mono);color:#3E2C10}
+.att b{font-weight:600}
+.att::before{content:"";width:10px;height:13px;border-radius:2px;background:#5FB3A1;flex:none}
+.dots{display:flex;gap:5px;padding:6px 2px}
+.dots span{width:7px;height:7px;border-radius:50%;background:#8FA29A;animation:dot 1s infinite ease-in-out}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{opacity:.3;transform:none}40%{opacity:1;transform:translateY(-3px)}}
+.sys{align-self:center;flex:none;font:12.5px/1.3 var(--f-mono);color:#6D4A0E;background:#FBE8C6;border:1px solid #EACB8C;padding:6px 12px;border-radius:999px;animation:msgIn .35s ease-out}
+.sys.done{color:#23584C;background:#DCEFE9;border-color:#A6D3C6}
+.summary-card{align-self:stretch;flex:none;background:#FBF5E3;border:1.5px dashed #C4AF72;border-radius:12px;padding:10px 14px;font-size:14.5px;line-height:1.4;color:#3A3220}
+.sc-h{font:600 11.5px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#8A7433;margin-bottom:4px}
+.summary-card ul{margin:0;padding-left:18px}
+.think{border:1.5px dashed #B78AD3;border-radius:12px;padding:8px 12px 9px;margin-bottom:9px;background:#F7F0FB;color:#473655;font-size:13.5px;line-height:1.38;transition:opacity .4s}
+.think.done{opacity:.62}
+.think-h{display:flex;justify-content:space-between;gap:10px;font:600 11.5px/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:#7C4DA0;margin-bottom:4px}
+.think ol{margin:0;padding-left:18px}
+.think li{margin:1px 0}
+.composer{height:64px;flex:none;border-top:1px solid #D3DCD6;display:flex;align-items:center;gap:10px;padding:0 14px}
+.input{flex:1;min-width:0;height:42px;background:#fff;border:1px solid #D3DCD6;border-radius:12px;display:flex;align-items:center;padding:0 12px;font-size:15.5px;white-space:nowrap;overflow:hidden}
+.input.typing{justify-content:flex-end}
+.input .ph{color:#8B9B95}
+.caret{display:inline-block;width:2px;height:19px;background:#15232A;margin-left:1px;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.effort-pill{flex:none;font:600 11.5px/1 var(--f-mono);letter-spacing:.05em;color:#7C4DA0;background:#F1E5F8;border:1px solid #D8BDE8;border-radius:999px;padding:7px 10px}
+.send{width:42px;height:42px;border-radius:12px;background:#C5CFCA;display:grid;place-items:center;color:#fff;flex:none;transition:background .2s}
+.send.on{background:#15232A}
+
+/* right-hand panel */
+.panel{isolation:isolate;position:absolute;left:650px;top:72px;width:590px;height:540px;background:#122732;border:1px solid #24414F;border-radius:18px;padding:20px 24px}
+.ro-top{display:flex;justify-content:space-between;align-items:center}
+.ro-label{font:600 12.5px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:#8CA4AE}
+.pill{font:600 12px/1 var(--f-mono);letter-spacing:.04em;padding:6px 10px;border-radius:999px;background:#1E4A3F;color:#9FE0CB;transition:background .3s,color .3s}
+.pill.warn{background:#4A3712;color:#F7C77A}
+.pill.full{background:#50231D;color:#FFA99C}
+.ro-nums{display:flex;align-items:baseline;gap:10px;margin-top:10px;font-variant-numeric:tabular-nums}
+.ro-num{font:600 30px/1 var(--f-mono);letter-spacing:-.02em}
+.ro-of{font:14px/1 var(--f-mono);color:#8CA4AE}
+.ro-pct{margin-left:auto;font:600 22px/1 var(--f-mono);color:#F2A541}
+.ro-bar{display:flex;height:10px;border-radius:5px;background:#1B3440;overflow:hidden;margin-top:12px}
+.ro-bar i{display:block;height:100%;width:0;transition:width .25s linear}
+.i{--c:#7A8CA8}.c{--c:#F2A541}.f{--c:#5FB3A1}.s{--c:#F1E4BE}.k{--c:#C58BE0}
+.ro-bar i{background:var(--c)}
+
+.mode{position:absolute;left:24px;right:24px;top:124px;bottom:20px;opacity:0;visibility:hidden;transition:opacity .45s,visibility 0s .45s}
+.mode.on{opacity:1;visibility:visible;transition:opacity .45s}
+.rv{opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
+.rv.on{opacity:1;transform:none}
+.lbl{font:600 11.5px/1.2 var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:#8CA4AE;margin-bottom:8px}
+
+/* tokens mode */
+#mode-tokens{display:flex;flex-direction:column;gap:14px}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{font:15.5px/1 var(--f-mono);padding:6px 7px;border-radius:6px;border:1px solid;color:#F1F5F6;white-space:pre}
+.chip.rv{transform:scale(.7)}
+.chip.rv.on{transform:none}
+.chip:nth-child(4n+1){background:rgba(242,165,65,.2);border-color:rgba(242,165,65,.55)}
+.chip:nth-child(4n+2){background:rgba(95,179,161,.2);border-color:rgba(95,179,161,.55)}
+.chip:nth-child(4n+3){background:rgba(124,196,228,.18);border-color:rgba(124,196,228,.5)}
+.chip:nth-child(4n+4){background:rgba(197,139,224,.2);border-color:rgba(197,139,224,.55)}
+.count{margin-top:8px;font:600 14px/1 var(--f-mono);color:#F2A541}
+.split{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.word{font:600 20px/1 var(--f-mono)}
+.arrow{color:#8CA4AE;font-size:20px}
+.parts{display:flex;gap:5px}
+.rule{font:22px/1.2 var(--f-mono)}
+.rule b{color:#F2A541;font-weight:600;font-size:30px}
+.small{font-size:14.5px;color:#9FB3BB;margin-top:4px}
+.io{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.io span{border:1px solid #2E4A57;border-radius:10px;padding:9px 12px;font-weight:700;font-size:16px}
+.io small{display:block;font-weight:400;font-size:14px;color:#9FB3BB}
+
+/* grid mode */
+.grid{display:grid;grid-template-columns:repeat(20,22px);gap:4px}
+.cell{width:22px;height:22px;border-radius:4px;background:#1A323E;border:1px solid #223F4C;transition:background .35s,border-color .35s}
+.cell.i,.cell.c,.cell.f,.cell.s,.cell.k{background:var(--c);border-color:var(--c)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:14px;font-size:14px;color:#B7C7CD}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:3px;background:var(--c)}
+.callout{margin:14px 0 0;font-size:17px;line-height:1.45;color:#DCE6E9;max-width:52ch}
+.callout b{color:#F2A541}
+
+/* summary mode */
+.sm{display:flex;align-items:center;gap:16px}
+.doc,.note{background:#0F222B;border:1px solid #2A4754;border-radius:12px;padding:12px 14px}
+.doc{width:220px;flex:none}
+.doc-h{display:flex;justify-content:space-between;gap:8px;font:600 12px/1.2 var(--f-mono);color:#9FB3BB;margin-bottom:10px}
+.lines{display:grid;gap:7px}
+.ln{height:8px;border-radius:4px;background:#2C4653;width:var(--w);transition:background .35s,box-shadow .35s}
+.ln.on{background:#F2A541;box-shadow:0 0 0 3px rgba(242,165,65,.2)}
+.sm-arrow{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;font:600 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:#F2A541}
+.note{flex:1;background:#F1E4BE;border-color:#F1E4BE;color:#2F2814}
+.note .doc-h{color:#7D6A33}
+.note ul{margin:0;padding-left:18px;font-size:16px;line-height:1.5}
+.sm-stat{margin-top:22px;font-size:17px;color:#DCE6E9}
+.sm-stat .big{font:600 26px/1 var(--f-mono);color:#F2A541;margin-right:6px}
+.sm-lost{margin-top:10px;font-size:15px;color:#9FB3BB}
+
+/* effort mode */
+.seg{position:relative;display:grid;grid-template-columns:repeat(3,120px);background:#0F222B;border:1px solid #2A4754;border-radius:12px;padding:4px;width:max-content}
+.seg span{position:relative;z-index:1;text-align:center;padding:9px 0;font-weight:700;font-size:15.5px;color:#9FB3BB;transition:color .3s}
+.seg span.cur{color:#1E1029}
+.knob{position:absolute;z-index:0;top:4px;left:4px;width:120px;bottom:4px;border-radius:9px;background:#C58BE0;transition:transform .45s cubic-bezier(.3,.7,.2,1)}
+.erows{margin-top:18px;display:grid;gap:6px}
+.erow{display:grid;grid-template-columns:76px 150px 50px 1fr;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid transparent;font-size:15px}
+.erow.head{padding-block:0 2px;font:600 11px/1.3 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#8CA4AE}
+.erow.cur{border-color:#6D4E82;background:rgba(197,139,224,.1)}
+.erow .n{font-weight:700}
+.tb{display:flex;align-items:center;gap:8px;font:13.5px/1 var(--f-mono);font-variant-numeric:tabular-nums}
+.tb b{display:block;height:8px;border-radius:4px;background:#C58BE0;width:var(--w)}
+.erow .tm{font:13.5px/1 var(--f-mono)}
+.bad{color:#FFA99C}.ok{color:#9FE0CB}
+.enote{margin:16px 0 0;font-size:15.5px;line-height:1.45;color:#B7C7CD}
+
+/* overlays */
+.ov{position:absolute;inset:0;z-index:5;background:#0E1C24;opacity:0;pointer-events:none}
+.ov-title{display:grid;grid-template-columns:1.25fr 1fr;align-items:center;gap:40px;padding:0 96px;
+  background:radial-gradient(800px 500px at 85% 20%,#1D3A47 0%,rgba(29,58,71,0) 65%),#0E1C24}
+.tt-eyebrow{margin:0;font:600 14px/1 var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:#F2A541}
+.tt-h{margin:18px 0 20px;font:800 96px/.94 var(--f-display);letter-spacing:-.035em;color:#F4F7F7}
+.tt-sub{margin:0;font-size:19px;color:#A9BCC3}
+.tt-grid{display:grid;grid-template-columns:repeat(12,26px);gap:5px;justify-content:center}
+.tt-grid .cell{width:26px;height:26px}
+.ov-recap{padding:64px 56px 0}
+.rc-h{margin:0 0 26px;font:800 58px/1 var(--f-display);letter-spacing:-.03em}
+.rc-cards{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.rc{background:#122732;border:1px solid #24414F;border-radius:14px;padding:20px 18px 22px}
+.rc i{display:block;width:18px;height:18px;border-radius:4px;background:var(--sw);margin-bottom:16px}
+.rc h3{margin:0 0 8px;font:700 23px/1.1 var(--f-display);letter-spacing:-.01em}
+.rc p{margin:0;font-size:16px;line-height:1.45;color:#C3D2D7}
+.rc-end{display:flex;align-items:center;gap:22px;margin-top:40px}
+.rc-end p{margin:0;font:700 30px/1 var(--f-display)}
+.replay{border:0;border-radius:999px;background:#F2A541;color:#1C1407;font-weight:700;font-size:17px;padding:12px 22px;cursor:pointer}
+
+/* subtitles + big play (unscaled, so they stay readable on phones) */
+.subs{position:absolute;left:0;right:0;bottom:4.2%;padding:0 7%;text-align:center;pointer-events:none}
+.subs span{display:inline;background:rgba(5,11,15,.84);color:#fff;font:700 clamp(11px,2.25vw,27px)/1.42 var(--f-body);font-size:clamp(11px,2.35cqw,28px);padding:.18em .55em;border-radius:6px;
+  -webkit-box-decoration-break:clone;box-decoration-break:clone}
+.bigplay{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:12px;
+  background:rgba(10,20,26,.78);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:999px;cursor:pointer;
+  padding:8px 20px 8px 8px;font:700 clamp(12px,1.7vw,18px)/1 var(--f-body);font-size:clamp(12px,1.7cqw,19px);white-space:nowrap}
+.bigplay.poster{top:auto;bottom:17%;transform:translateX(-50%)}
+.bigplay .ic{width:clamp(30px,5cqw,56px);aspect-ratio:1;border-radius:50%;background:#F2A541;color:#15100A;display:grid;place-items:center}
+.bigplay .ic svg{width:45%;height:45%}
+
+/* control bar */
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:8px 10px;background:#0B161C;color:#DAE4E7}
+.cbtn{height:38px;min-width:38px;padding:0 8px;border:0;border-radius:8px;background:transparent;display:grid;place-items:center;cursor:pointer;color:#DAE4E7}
+.cbtn:hover{background:rgba(255,255,255,.08)}
+.cbtn svg{width:20px;height:20px}
+.cbtn.txt{font:600 13px/1 var(--f-mono)}
+.cbtn[aria-pressed="false"]{color:#6E848D}
+.time{font:13px/1 var(--f-mono);font-variant-numeric:tabular-nums;color:#A7BAC1;white-space:nowrap;padding:0 6px}
+.seekwrap{position:relative;flex:1 1 200px;height:34px;display:flex;align-items:center;margin:0 6px}
+.ticks{position:absolute;left:8px;right:8px;top:50%;height:6px;transform:translateY(-50%);pointer-events:none;z-index:2}
+.ticks i{position:absolute;top:0;width:3px;height:6px;margin-left:-1px;background:#0B161C}
+input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;margin:0;cursor:pointer;height:34px}
+#seek{width:100%;position:relative;z-index:1}
+#vol{width:84px}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(to right,#F2A541 var(--p,0%),#2A404B var(--p,0%))}
+input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:#2A404B}
+input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:#F2A541}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;margin-top:-5px;border-radius:50%;background:#F6F1E6;border:0;box-shadow:0 0 0 3px rgba(242,165,65,.35)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#F6F1E6;border:0;box-shadow:0 0 0 3px rgba(242,165,65,.35)}
+@media (max-width:600px){
+  .seekwrap{order:-1;flex-basis:100%;margin:0 2px}
+  #vol{display:none}
+  .time{margin-right:auto}
+}
+
+/* below the player */
+.below{display:grid;grid-template-columns:1.55fr 1fr;gap:36px;margin-top:36px}
+@media (max-width:780px){.below{grid-template-columns:1fr;gap:28px}}
+.below h2,.transcript summary{font:700 21px/1.2 var(--f-display);letter-spacing:-.01em;margin:0 0 12px}
+.chapters ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.chbtn{width:100%;display:grid;grid-template-columns:54px 1fr;gap:12px;text-align:left;padding:10px 12px;border:0;border-radius:10px;background:transparent;cursor:pointer}
+.chbtn:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.chbtn[aria-current="true"]{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.chbtn .tm{font:600 14px/1.5 var(--f-mono);color:var(--accent);font-variant-numeric:tabular-nums}
+.chbtn .nm{display:block;font-weight:700}
+.chbtn .bl{display:block;color:var(--muted);font-size:15px}
+.keys dl{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;margin:0;align-items:center}
+.keys dd{margin:0;color:var(--muted)}
+kbd{font:600 12.5px/1 var(--f-mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:4px 7px;background:var(--surface);color:var(--ink);white-space:nowrap}
+.keys p{color:var(--muted);font-size:15px;margin:18px 0 0;max-width:46ch}
+.transcript{margin-top:36px;border-top:1px solid var(--line);padding-top:18px}
+.transcript summary{cursor:pointer;margin:0}
+.tr-ch{margin-top:20px}
+.tr-ch h3{margin:0 0 6px;font:700 16px/1.3 var(--f-display)}
+.tr-line{display:grid;grid-template-columns:54px 1fr;gap:12px;width:100%;text-align:left;padding:5px 12px;border:0;border-radius:8px;background:transparent;cursor:pointer;max-width:72ch}
+.tr-line:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.tr-line .tm{font:13px/1.7 var(--f-mono);color:var(--muted)}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="intro">
+    <p class="eyebrow">Explainer film · 4:24 · subtitles and music</p>
+    <h1>What the AI Remembers</h1>
+    <p class="dek">Watch Maya's first long chat with an AI assistant, and see what happens on the other side of the screen: tokens, the context window, summarization, compaction, and thinking effort.</p>
+  </header>
+
+  <section class="player" id="player" aria-label="Explainer film">
+    <div class="screen" id="screen">
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="topbar">
+          <div class="chap"><span class="num" id="chapNum"></span><span id="chapName">Opening</span></div>
+          <div class="brand">What the AI Remembers</div>
+        </div>
+
+        <div class="chat">
+          <div class="chat-head">
+            <span class="who m">M</span>
+            <div><div class="ch-title">Maya</div><div class="ch-sub">chatting with Assistant</div></div>
+          </div>
+          <div class="chat-body" id="chatBody"></div>
+          <div class="composer">
+            <div class="input" id="input"><span class="ph" id="ph">Message Assistant…</span><span id="typed" hidden></span><span class="caret" id="caret" hidden></span></div>
+            <span class="effort-pill rv" data-at="181">Effort · High</span>
+            <div class="send" id="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="ro">
+            <div class="ro-top"><span class="ro-label">Context window</span><span class="pill" id="pill">Plenty of room</span></div>
+            <div class="ro-nums"><span class="ro-num" id="roNum">12,000</span><span class="ro-of">/ 200,000 tokens</span><span class="ro-pct" id="roPct">6%</span></div>
+            <div class="ro-bar" id="roBar"><i class="i"></i><i class="s"></i><i class="f"></i><i class="c"></i><i class="k"></i></div>
+          </div>
+
+          <div class="mode" id="mode-tokens">
+            <div class="rv" data-at="15.2">
+              <div class="lbl">Maya's message, split into tokens</div>
+              <div class="chips" id="chips"></div>
+              <div class="count rv" data-at="20">17 tokens</div>
+            </div>
+            <div class="rv" data-at="21.4">
+              <div class="lbl">Long words split into pieces</div>
+              <div class="split"><span class="word">Unbelievable</span><span class="arrow rv" data-at="23.4">→</span>
+                <span class="parts"><span class="chip rv" data-at="23.6">Un</span><span class="chip rv" data-at="23.9">believ</span><span class="chip rv" data-at="24.2">able</span></span>
+                <span class="count rv" data-at="24.8" style="margin:0">3 tokens</span></div>
+            </div>
+            <div class="rv" data-at="28.4">
+              <div class="lbl">Rule of thumb</div>
+              <div class="rule"><b>100</b> tokens ≈ <b>75</b> words</div>
+              <div class="small">in English. Code and many other languages use more tokens per word.</div>
+            </div>
+            <div class="rv" data-at="35.4">
+              <div class="lbl">Both directions count</div>
+              <div class="io"><span>Input tokens<small>what you send in</small></span><span>Output tokens<small>what the AI writes back</small></span></div>
+            </div>
+          </div>
+
+          <div class="mode" id="mode-grid">
+            <div class="grid" id="grid"></div>
+            <div class="legend">
+              <span class="i"><i></i>Instructions</span><span class="c"><i></i>Conversation</span><span class="f"><i></i>Files</span><span class="s"><i></i>Summary</span><span class="k"><i></i>Thinking</span>
+            </div>
+            <p class="callout" id="callout"></p>
+          </div>
+
+          <div class="mode" id="mode-summary">
+            <div class="sm">
+              <div class="doc"><div class="doc-h"><span>emails.txt</span><span>29,000 tokens</span></div><div class="lines" id="docLines"></div></div>
+              <div class="sm-arrow rv" data-at="128.4"><span>summarize</span>
+                <svg width="46" height="16" viewBox="0 0 46 16" fill="none" stroke="#F2A541" stroke-width="2" stroke-linecap="round"><path d="M2 8h40M36 2l6 6-6 6"/></svg></div>
+              <div class="note rv" data-at="129.4"><div class="doc-h"><span>summary</span><span>≈ 60 tokens</span></div>
+                <ul><li>Budget capped at $40k</li><li>Launch moved to March 14</li><li>Priya owns design</li></ul></div>
+            </div>
+            <div class="sm-stat rv" data-at="131"><span class="big">29,000 → 60</span> tokens, less than 1% of the size.</div>
+            <div class="sm-lost rv" data-at="134.8">Left out: who said what, the exact wording, side conversations.</div>
+          </div>
+
+          <div class="mode" id="mode-effort">
+            <div class="lbl">Thinking effort</div>
+            <div class="seg"><i class="knob" id="knob"></i><span data-e="0">Low</span><span data-e="1">Medium</span><span data-e="2">High</span></div>
+            <div class="erows">
+              <div class="erow head rv" data-at="204.7"><span>Effort</span><span>Thinking tokens</span><span>Time</span><span>Result on Maya's schedule</span></div>
+              <div class="erow rv" data-at="204.7" data-e="0"><span class="n">Low</span><span class="tb"><b style="--w:6px"></b>~400</span><span class="tm">3 s</span><span class="bad">Missed the Tuesday clash</span></div>
+              <div class="erow rv" data-at="207.5" data-e="1"><span class="n">Medium</span><span class="tb"><b style="--w:26px"></b>~2,500</span><span class="tm">9 s</span><span>Found the clash</span></div>
+              <div class="erow rv" data-at="210.2" data-e="2"><span class="n">High</span><span class="tb"><b style="--w:92px"></b>~9,000</span><span class="tm">22 s</span><span class="ok">Found it and re-checked all 14 tasks</span></div>
+            </div>
+            <p class="enote rv" data-at="216.2">Scratch work takes room in the window while the model works. It is usually cleared once the answer is written.</p>
+          </div>
+        </div>
+
+        <div class="ov ov-title" id="ovTitle">
+          <div>
+            <p class="tt-eyebrow">A short film in one conversation</p>
+            <h2 class="tt-h">What the AI Remembers</h2>
+            <p class="tt-sub">Tokens · Context windows · Summarization · Compaction · Thinking effort</p>
+          </div>
+          <div class="tt-grid" id="ttGrid"></div>
+        </div>
+
+        <div class="ov ov-recap" id="ovRecap">
+          <h2 class="rc-h">Recap</h2>
+          <div class="rc-cards">
+            <div class="rc rv" data-at="233.7" style="--sw:#F2A541"><i></i><h3>Token</h3><p>A small chunk of text. About 100 tokens make 75 English words.</p></div>
+            <div class="rc rv" data-at="239" style="--sw:#7CC4E4"><i></i><h3>Context window</h3><p>Everything the AI can see at once. Fixed size. Anything outside it doesn't exist for the model.</p></div>
+            <div class="rc rv" data-at="244" style="--sw:#F1E4BE"><i></i><h3>Summarization</h3><p>Rewriting something long as something short, keeping the key facts.</p></div>
+            <div class="rc rv" data-at="246.3" style="--sw:#5FB3A1"><i></i><h3>Compaction</h3><p>Summarizing the older conversation to free up room. Small details can be lost.</p></div>
+            <div class="rc rv" data-at="249" style="--sw:#C58BE0"><i></i><h3>Thinking effort</h3><p>How much step-by-step work happens before the answer. More effort: slower, more careful.</p></div>
+          </div>
+          <div class="rc-end rv" data-at="256"><p>Thanks for watching.</p><button class="replay" id="replay" type="button">Watch again</button></div>
+        </div>
+      </div>
+
+      <div class="subs" id="subs"><span id="subText" hidden></span></div>
+      <button class="bigplay" id="bigplay" type="button"><span class="ic"><svg viewBox="0 0 24 24"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor"/></svg></span><span id="bigLabel">Play with sound</span></button>
+    </div>
+
+    <div class="controls">
+      <button class="cbtn" id="playBtn" type="button" aria-label="Play"><svg viewBox="0 0 24 24" id="playIcon"><path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor"/></svg></button>
+      <span class="time" id="time">0:00 / 4:24</span>
+      <div class="seekwrap"><div class="ticks" id="ticks"></div><input type="range" id="seek" min="0" max="264" step="0.1" value="0" aria-label="Seek"></div>
+      <button class="cbtn txt" id="speedBtn" type="button" aria-label="Playback speed">1×</button>
+      <button class="cbtn txt" id="ccBtn" type="button" aria-pressed="true" aria-label="Subtitles">CC</button>
+      <button class="cbtn" id="muteBtn" type="button" aria-pressed="false" aria-label="Mute"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="volIcon"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+      <input type="range" id="vol" min="0" max="1" step="0.01" value="0.8" aria-label="Volume">
+      <button class="cbtn" id="fsBtn" type="button" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    </div>
+  </section>
+
+  <section class="below">
+    <div class="chapters"><h2>Chapters</h2><ol id="chapters"></ol></div>
+    <div class="keys">
+      <h2>Controls</h2>
+      <dl>
+        <dt><kbd>Space</kbd></dt><dd>Play or pause</dd>
+        <dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Back or forward 5 seconds</dd>
+        <dt><kbd>C</kbd></dt><dd>Subtitles on or off</dd>
+        <dt><kbd>M</kbd></dt><dd>Mute</dd>
+        <dt><kbd>F</kbd></dt><dd>Full screen</dd>
+      </dl>
+      <p>The music and sound effects are synthesized live in your browser. Nothing is downloaded, and the soundtrack gets a little brighter as the context window fills.</p>
+    </div>
+  </section>
+
+  <details class="transcript">
+    <summary>Read the full transcript</summary>
+    <div id="transcript"></div>
+  </details>
+</main>
+
+<script>
+(() => {
+'use strict';
+const $ = (s) => document.querySelector(s);
+const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const fmt = (n) => Math.round(n).toLocaleString('en-US');
+const mmss = (s) => { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const setText = (el, s) => { if (el._s !== s) { el.textContent = s; el._s = s; } };
+const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+const DUR = 264;
+const WINDOW = 200000;
+const INSTR = 12000;
+const COMPACT_START = 146, COMPACT_END = 148.5;
+
+/* ---------------- script ---------------- */
+const CHAPTERS = [
+  { t: 0,     n: '',   name: 'Opening',            blurb: 'How does an AI keep track of a conversation?' },
+  { t: 10,    n: '01', name: 'Tokens',             blurb: 'The small pieces of text an AI reads and writes.' },
+  { t: 42,    n: '02', name: 'The context window', blurb: 'A fixed-size desk that holds everything the AI can see.' },
+  { t: 85.5,  n: '03', name: 'Filling up',         blurb: 'Three big documents land on the desk at once.' },
+  { t: 115.5, n: '04', name: 'Summarization',      blurb: 'Turning something long into something short.' },
+  { t: 140,   n: '05', name: 'Compaction',         blurb: 'Summarizing the conversation itself to make room.' },
+  { t: 181,   n: '06', name: 'Thinking effort',    blurb: 'How much scratch work happens before an answer.' },
+  { t: 228,   n: '07', name: 'Recap',              blurb: 'Five ideas on one screen.' },
+];
+
+const CUES = [
+  [0.6, 4.8, "Ever wondered how an AI keeps track of a conversation?"],
+  [4.9, 9.6, "Let's watch one chat, and look inside while it happens."],
+  [11, 15, "Meet Maya. She's new to AI, and she's curious."],
+  [15.2, 21, "The AI doesn't read letters or whole sentences. It reads tokens."],
+  [21.2, 28, "A token is a small chunk of text: a short word, or a piece of a longer one."],
+  [28.3, 35, "As a rule of thumb, 100 tokens is about 75 English words."],
+  [35.3, 41.5, "Everything is counted in tokens: what you send, and what the AI writes back."],
+  [43, 47, "Maya's next question gets to the heart of it."],
+  [47.3, 53, "The context window is everything the AI can see at one moment."],
+  [53.2, 59.5, "Think of it as a desk. Every message, file, and instruction has to fit on it."],
+  [59.7, 65.5, "The desk has a fixed size, measured in tokens. This one holds 200,000."],
+  [65.7, 71.5, "Each new message adds to the pile. Nothing leaves on its own."],
+  [71.7, 78.5, "And the AI has no memory outside the desk. Each reply is built only from what's on it."],
+  [78.7, 84.5, "So what happens when the desk fills up?"],
+  [86, 91.5, "Maya shares her whole project at once."],
+  [91.7, 98, "Documents are big. These three add up to 158,000 tokens."],
+  [98.2, 104, "In one step, the desk went from nearly empty to almost 90% full."],
+  [104.2, 109.5, "With a full window, there's little room left for new messages, or for the reply."],
+  [109.7, 114.8, "Very long contexts can also make it harder to focus on what matters. Time to make room."],
+  [116, 121.5, "The basic tool for making room is summarization."],
+  [121.7, 128, "A summary rewrites something long into something short, and keeps the key facts."],
+  [128.2, 134.5, "29,000 tokens of emails become three lines: the budget, the deadline, who owns what."],
+  [134.7, 139.8, "Some details are lost. The skill is keeping the ones that matter."],
+  [140.5, 146, "Compaction is summarization applied to the conversation itself."],
+  [146.2, 152, "When the window is nearly full, older messages are swapped for a short summary."],
+  [152.2, 158.5, "The desk is cleared, the key facts stay, and the chat carries on."],
+  [159, 164.5, "Maya checks: does the AI still know the launch date? It does."],
+  [164.7, 170, "The trade-off: exact wording and small details from earlier may be gone."],
+  [170.2, 175.5, "Tip: keep key facts in a notes file or project instructions, so they load every time."],
+  [175.7, 180.8, "Many tools compact automatically. Some let you run it yourself, with a command like /compact."],
+  [181.5, 186.5, "One last idea. Maya asks something genuinely hard."],
+  [186.7, 192.5, "Before answering, many models can think: work through the problem step by step."],
+  [192.7, 198.5, "That reasoning uses thinking tokens, like scratch paper you usually don't see."],
+  [198.7, 204.5, "Thinking effort sets how much scratch paper the model is allowed to use."],
+  [204.7, 210, "Low effort answers fast. That's right for simple questions."],
+  [210.2, 216, "High effort is slower and uses more tokens, but catches mistakes on hard problems."],
+  [216.2, 221.8, "Here, careful thinking caught that Priya was booked twice on Tuesday."],
+  [222, 227.8, "Match the effort to the task: quick for easy things, deep for tricky ones."],
+  [229, 233.5, "Let's recap."],
+  [233.7, 238.8, "Tokens: the small pieces of text an AI reads and writes."],
+  [239, 243.8, "Context window: everything it can see at once. It has a fixed size."],
+  [244, 248.8, "Summarization and compaction: shrinking older material to make room."],
+  [249, 253.8, "Thinking effort: how much work happens before the answer."],
+  [254, 259.5, "Now you know what's happening on the other side of the chat."],
+];
+
+// user message: typing starts at t, bubble appears at `sent`
+const U = (t, typeDur, text, tokens, extra = {}) => ({ who: 'user', t, sent: t + typeDur, text, tokens, ...extra });
+// assistant message: typing dots from t, text streams from ss to se
+const A = (t, dur, text, tokens, extra = {}) => ({ who: 'ai', t, ss: t + 0.8, se: t + 0.8 + dur, text, tokens, ...extra });
+
+const MSGS = [
+  U(11, 2.5, "Hi! I'm new to this. How do you actually read what I type?", 17, { old: 1 }),
+  A(14.3, 5.4, 'I read text in small pieces called tokens. A token can be a whole word or just part of one. "Unbelievable" might become three: un · believ · able.', 45, { old: 1 }),
+  U(43.2, 2.2, "So do you remember everything we've said?", 10, { old: 1 }),
+  A(46.4, 6, "Everything inside my context window, yes. That's my working memory: your messages, my replies, any files you share, and my instructions. If it isn't in the window, I can't see it.", 48, { old: 1 }),
+  U(86.2, 2.6, "Here's my whole project. Can you help me plan the launch?", 14, { old: 1, files: 158000,
+    att: [['notes.pdf', '58k tokens'], ['reports.docx', '71k tokens'], ['emails.txt', '29k tokens']] }),
+  A(92.4, 5, "I've read all three. Design wraps on Feb 20, QA runs two weeks, and launch lands on March 14. Here's a week-by-week plan…", 4800, { old: 1 }),
+  U(100.6, 1.8, 'Can you check the budget table on page 12?', 11, { old: 1 }),
+  A(103.4, 4, 'Page 12 shows $38,400 spent against a $40,000 cap. Contractor fees are the biggest line at $17,250.', 3900, { old: 1 }),
+  U(117, 2, 'Can you summarize the email thread for me?', 10, { old: 1 }),
+  A(120.1, 3.8, 'Sure. The short version:\n• Budget capped at $40k\n• Launch moved to March 14\n• Priya owns design', 40, { old: 1 }),
+  { who: 'sys', t: 143.4, after: 148.6 },
+  { who: 'summary', t: COMPACT_END },
+  U(159.2, 2.1, 'Wait, do you still remember the launch date?', 11),
+  A(162.4, 5.4, "Yes: March 14. It's in the summary of our earlier chat. I no longer have the exact wording of page 12, so paste it again if you need the details.", 40),
+  U(181.4, 3, 'Last one: plan launch week for 6 people and 14 tasks. Nobody can be double-booked.', 22),
+  { who: 'ai', t: 185, ss: 208.3, se: 214.2, tokens: 32,
+    text: "Here's a plan with no overlaps. I moved launch copy to Wednesday at 2 pm, because Priya was booked twice on Tuesday morning.",
+    thinking: { start: 185.4, end: 207.6, drop: 215, tokens: 9000, lines: [
+      "List each person's tasks and time slots.",
+      'Priya: design review Tue 10:00, launch copy Tue 10:00. Conflict.',
+      'Sam is free Wednesday morning and could take QA sign-off.',
+      'Move launch copy to Wed 14:00. Priya is free then.',
+      'Re-check all 14 tasks: nobody is in two places at once. ✓',
+    ] } },
+];
+const SUMMARY_TOKENS = 4200;
+
+/* ---------------- token accounting ---------------- */
+function usage(t) {
+  const cp = prog(t, COMPACT_START, COMPACT_END);
+  let conv = 0, files = 0, think = 0;
+  for (const m of MSGS) {
+    let f;
+    if (m.who === 'user') f = t >= m.sent ? 1 : 0;
+    else if (m.who === 'ai') f = prog(t, m.ss, m.se);
+    else continue;
+    const keep = m.old ? 1 - cp : 1;
+    conv += m.tokens * f * keep;
+    if (m.files && t >= m.sent) files += m.files * prog(t, m.sent + 0.3, m.sent + 2.8) * keep;
+    if (m.thinking) {
+      const th = m.thinking;
+      think = th.tokens * prog(t, th.start, th.end) * (1 - prog(t, th.drop, th.drop + 2));
+    }
+  }
+  const summary = SUMMARY_TOKENS * prog(t, COMPACT_END, COMPACT_END + 0.8);
+  const total = INSTR + conv + files + summary + think;
+  return { instr: INSTR, conv, files, summary, think, total };
+}
+const before = usage(COMPACT_START - 0.05), after = usage(150);
+const sysMsg = MSGS.find((m) => m.who === 'sys');
+sysMsg.text = `Context window ${Math.round(before.total / WINDOW * 100)}% full · compacting conversation…`;
+sysMsg.textAfter = `Conversation compacted · ${fmt(before.total)} → ${fmt(after.total)} tokens`;
+
+const CALLOUTS = [
+  [42, 59.5, 'Each square is <b>1,000 tokens</b>. The blue-grey squares are instructions the app gives the AI before you type anything.'],
+  [59.5, 71.5, '200 squares = <b>200,000 tokens</b>. That is about 150,000 words, or a 500-page book.'],
+  [71.5, 86.4, 'The whole chat so far fits in <b>one amber square</b>. Plenty of room.'],
+  [86.4, 91.2, 'Maya is attaching three documents…'],
+  [91.2, 115.5, `notes 58k + reports 71k + emails 29k = <b>158,000 tokens</b>. The window is almost 90% full.`],
+  [140, 146, `Nearly full: <b>${fmt(before.total)}</b> of 200,000 tokens in use.`],
+  [146, 159, 'Compaction: the old messages and files are replaced by <b>one short summary</b> (cream squares).'],
+  [159, 999, `From <b>${fmt(before.total)}</b> down to <b>${fmt(after.total)}</b> tokens. The key facts survived. The full documents did not.`],
+];
+const MODES = [[0, 'tokens'], [42, 'grid'], [115.5, 'summary'], [140, 'grid'], [181, 'effort']];
+
+/* ---------------- build the stage ---------------- */
+const chatBody = $('#chatBody');
+for (const m of MSGS) {
+  let node;
+  if (m.who === 'user') {
+    node = el('div', 'msg user');
+    const b = el('div', 'bubble');
+    b.append(el('p', 'txt', m.text));
+    if (m.att) {
+      const a = el('div', 'atts');
+      for (const [n, s] of m.att) { const c = el('span', 'att'); c.append(el('b', null, n), document.createTextNode(s)); a.append(c); }
+      b.append(a);
+    }
+    node.append(b);
+  } else if (m.who === 'ai') {
+    node = el('div', 'msg ai');
+    node.append(el('span', 'who a', 'A'));
+    const b = el('div', 'bubble');
+    if (m.thinking) {
+      const th = el('div', 'think');
+      const h = el('div', 'think-h');
+      m.thHead = el('span', null, 'Thinking');
+      m.thCount = el('span', null, '');
+      h.append(m.thHead, m.thCount);
+      const ol = el('ol');
+      m.thLines = m.thinking.lines.map((line, i) => {
+        const li = el('li'); li._full = line;
+        li._start = m.thinking.start + 0.4 + i * 4.3;
+        ol.append(li); return li;
+      });
+      th.append(h, ol);
+      b.append(th);
+      m.think = th;
+    }
+    m.dots = el('div', 'dots');
+    m.dots.append(el('span'), el('span'), el('span'));
+    m.txt = el('p', 'txt');
+    b.append(m.dots, m.txt);
+    node.append(b);
+  } else if (m.who === 'sys') {
+    node = el('div', 'sys', m.text);
+  } else {
+    node = el('div', 'summary-card');
+    node.append(el('div', 'sc-h', 'Summary of earlier conversation'));
+    const ul = el('ul');
+    ['Maya is planning a product launch. She shared notes, reports, and emails.',
+     'Launch date: March 14. Design wraps Feb 20.',
+     'Budget: $38,400 spent of a $40,000 cap.',
+     'Priya owns design.'].forEach((s) => ul.append(el('li', null, s)));
+    node.append(ul);
+  }
+  node.hidden = true;
+  m.node = node;
+  chatBody.append(node);
+}
+
+// token chips for Maya's first message
+const TOKENS = ['Hi', '!', ' I', "'m", ' new', ' to', ' this', '.', ' How', ' do', ' you', ' actually', ' read', ' what', ' I', ' type', '?'];
+const chips = $('#chips');
+TOKENS.forEach((tk, i) => {
+  const c = el('span', 'chip rv', tk.trim());
+  c.dataset.at = (15.6 + i * 0.24).toFixed(2);
+  chips.append(c);
+});
+
+// the desk: 20 x 10 squares, each 1,000 tokens
+const grid = $('#grid');
+const cells = [];
+for (let i = 0; i < 200; i++) { const c = el('div', 'cell'); grid.append(c); cells.push(c); }
+
+// title-card motif: a window part-way full
+const ttGrid = $('#ttGrid');
+const motif = 'iiiiiiiiiiiiccfffffffffffffffffffffffffffffffffffcccsss';
+for (let i = 0; i < 96; i++) {
+  const k = motif[i] || '';
+  ttGrid.append(el('div', 'cell' + (k ? ' ' + k : '')));
+}
+
+// email document lines; three hold the key facts
+const docLines = $('#docLines');
+const widths = [92, 78, 88, 64, 95, 70, 84, 90, 58, 86, 74, 93, 66, 81, 52];
+const KEY = { 3: 124.5, 8: 125.5, 12: 126.5 };
+widths.forEach((w, i) => {
+  const l = el('div', 'ln'); l.style.setProperty('--w', w + '%');
+  if (KEY[i]) l.dataset.at = KEY[i];
+  docLines.append(l);
+});
+
+const reveal = [...document.querySelectorAll('[data-at]')].map((e) => ({ e, at: +e.dataset.at }));
+const modes = Object.fromEntries(['tokens', 'grid', 'summary', 'effort'].map((k) => [k, $('#mode-' + k)]));
+const barParts = [...document.querySelectorAll('#roBar i')];
+const segSpans = [...document.querySelectorAll('.seg span')];
+const eRows = [...document.querySelectorAll('.erow[data-e]')];
+
+/* ---------------- sound: synthesized live with Web Audio ---------------- */
+const Sound = (() => {
+  let ctx = null, master, music, sfxBus, padLP, arpLP, noiseBuf, next = 0, step = 0;
+  let vol = 0.8, muted = false, drums = false, lastCut = 0, lastFade = -1;
+  const STEP = 60 / 76 / 2; // eighth notes at 76 bpm
+  const PROG = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]]; // Fmaj7 Em7 Dm7 Cmaj7
+  const ARP = [0, 2, 1, 3, 2, 0, 3, 1, 0, 2, 1, 3, 2, 3, 1, 2];
+  const MASK = [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1];
+  const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+  function init() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    ctx = new AC();
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.ratio.value = 3;
+    master = ctx.createGain(); master.gain.value = muted ? 0 : vol;
+    master.connect(comp); comp.connect(ctx.destination);
+    const verb = ctx.createConvolver(); verb.buffer = impulse(3);
+    const wet = ctx.createGain(); wet.gain.value = 0.3;
+    verb.connect(wet); wet.connect(master);
+    music = ctx.createGain(); music.gain.value = 0;
+    music.connect(master); music.connect(verb);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = 0.6; sfxBus.connect(master);
+    const sv = ctx.createGain(); sv.gain.value = 0.35; sfxBus.connect(sv); sv.connect(verb);
+    padLP = ctx.createBiquadFilter(); padLP.type = 'lowpass'; padLP.frequency.value = 700; padLP.Q.value = 0.6; padLP.connect(music);
+    arpLP = ctx.createBiquadFilter(); arpLP.type = 'lowpass'; arpLP.frequency.value = 2400; arpLP.connect(music);
+    noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const d = noiseBuf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    next = ctx.currentTime + 0.1; step = 0;
+    setInterval(schedule, 40);
+    return true;
+  }
+  function impulse(sec) {
+    const len = Math.floor(ctx.sampleRate * sec), b = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) { const d = b.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3); }
+    return b;
+  }
+  function env(g, time, a, peak, decay) {
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.exponentialRampToValueAtTime(peak, time + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + a + decay);
+  }
+  function osc(type, freq, time, decay, dest, peak, a = 0.005) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, time);
+    env(g, time, a, peak, decay);
+    o.connect(g); g.connect(dest); o.start(time); o.stop(time + a + decay + 0.05);
+    return o;
+  }
+  function noise(time, decay, dest, peak, type, freq, q = 1, a = 0.002) {
+    const s = ctx.createBufferSource(); s.buffer = noiseBuf;
+    const f = ctx.createBiquadFilter(); f.type = type; f.frequency.setValueAtTime(freq, time); f.Q.value = q;
+    const g = ctx.createGain(); env(g, time, a, peak, decay);
+    s.connect(f); f.connect(g); g.connect(dest);
+    s.start(time, Math.random()); s.stop(time + a + decay + 0.05);
+    return f;
+  }
+  function pad(chord, time, dur) {
+    for (const n of chord) for (const det of [-7, 7]) {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = 'sawtooth'; o.frequency.value = hz(n); o.detune.value = det;
+      g.gain.setValueAtTime(0, time);
+      g.gain.linearRampToValueAtTime(0.014, time + 1.4);
+      g.gain.setValueAtTime(0.014, time + dur - 0.3);
+      g.gain.linearRampToValueAtTime(0, time + dur + 1.6);
+      o.connect(g); g.connect(padLP); o.start(time); o.stop(time + dur + 1.7);
+    }
+  }
+  function scheduleStep(s, time) {
+    const chord = PROG[Math.floor(s / 16) % 4], i = s % 16;
+    if (i === 0) pad(chord, time, 16 * STEP);
+    if (s % 8 === 0) { osc('sine', hz(chord[0] - 12), time, 1.4, music, 0.15, 0.01); osc('triangle', hz(chord[0] - 12), time, 0.5, music, 0.04, 0.01); }
+    if (MASK[i]) {
+      osc('triangle', hz(chord[ARP[i]] + 12), time, 0.45, arpLP, 0.05);
+      if (i % 4 === 0) osc('sine', hz(chord[ARP[i]] + 24), time, 0.7, arpLP, 0.012);
+    }
+    if (drums) {
+      if (s % 8 === 0) {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.frequency.setValueAtTime(120, time); o.frequency.exponentialRampToValueAtTime(42, time + 0.16);
+        env(g, time, 0.004, 0.2, 0.22); o.connect(g); g.connect(music); o.start(time); o.stop(time + 0.32);
+      }
+      if (s % 8 === 4) noise(time, 0.12, music, 0.045, 'bandpass', 1900, 1.2);
+      if (s % 2 === 1) noise(time, 0.04, music, 0.016, 'highpass', 7000);
+    }
+  }
+  function schedule() {
+    if (!ctx || ctx.state !== 'running') return;
+    while (next < ctx.currentTime + 0.2) { scheduleStep(step, next); next += STEP; step++; }
+  }
+  const FX = {
+    send(t) { const o = osc('sine', 700, t, 0.12, sfxBus, 0.1); o.frequency.exponentialRampToValueAtTime(1150, t + 0.06); },
+    recv(t) { const o = osc('sine', 620, t, 0.16, sfxBus, 0.08); o.frequency.exponentialRampToValueAtTime(440, t + 0.08); },
+    tick(t) { osc('triangle', 1500, t, 0.05, sfxBus, 0.025); },
+    stack(t) { [330, 392, 494].forEach((f, i) => osc('sine', f, t + i * 0.09, 0.18, sfxBus, 0.08)); },
+    alert(t) { osc('triangle', 880, t, 0.22, sfxBus, 0.05); osc('triangle', 660, t + 0.16, 0.3, sfxBus, 0.05); },
+    whoosh(t) {
+      const f = noise(t, 1.5, sfxBus, 0.14, 'bandpass', 250, 1.4, 0.5);
+      f.frequency.exponentialRampToValueAtTime(3200, t + 0.8); f.frequency.exponentialRampToValueAtTime(300, t + 2);
+    },
+    chime(t) { [1046.5, 1568, 2093].forEach((f, i) => osc('sine', f, t + i * 0.04, 1.6, sfxBus, 0.035)); },
+  };
+  return {
+    start() { if (!ctx && !init()) return; if (ctx.state !== 'running') ctx.resume(); },
+    pause() { if (ctx && ctx.state === 'running') ctx.suspend(); },
+    fx(name) { if (ctx && ctx.state === 'running' && FX[name]) FX[name](ctx.currentTime + 0.01); },
+    setVolume(v) { vol = v; if (ctx) master.gain.setTargetAtTime(muted ? 0 : vol, ctx.currentTime, 0.05); },
+    setMuted(m) { muted = m; if (ctx) master.gain.setTargetAtTime(muted ? 0 : vol, ctx.currentTime, 0.05); },
+    // per-frame hints from the film: fuller window = brighter pad; drums in the middle chapters
+    update(fullness, fade, withDrums) {
+      drums = withDrums;
+      if (!ctx) return;
+      const cut = 650 + 2200 * fullness;
+      if (Math.abs(cut - lastCut) > 30) { padLP.frequency.setTargetAtTime(cut, ctx.currentTime, 0.4); lastCut = cut; }
+      if (Math.abs(fade - lastFade) > 0.01) { music.gain.setTargetAtTime(0.55 * fade, ctx.currentTime, 0.25); lastFade = fade; }
+    },
+  };
+})();
+
+const EVENTS = [[0.4, 'chime'], [89.1, 'stack'], [143.4, 'alert'], [COMPACT_START, 'whoosh'], [COMPACT_END, 'chime'],
+  [233.7, 'tick'], [239, 'tick'], [244, 'tick'], [246.3, 'tick'], [249, 'tick'], [256, 'chime']];
+for (const m of MSGS) {
+  if (m.who === 'user') EVENTS.push([m.sent, 'send']);
+  if (m.who === 'ai') EVENTS.push([m.ss, 'recv']);
+  if (m.thinking) m.thLines.forEach((li) => EVENTS.push([li._start, 'tick']));
+}
+
+/* ---------------- render one frame from time t ---------------- */
+const $subText = $('#subText'), $callout = $('#callout');
+let captions = true;
+
+function renderChat(t) {
+  const cp = prog(t, COMPACT_START, COMPACT_END);
+  let typing = null;
+  for (const m of MSGS) {
+    const n = m.node;
+    let vis = m.who === 'user' ? t >= m.sent : t >= m.t;
+    if (m.who === 'user' && t >= m.t && t < m.sent) typing = m;
+    if (m.old && t >= COMPACT_END) vis = false;
+    n.hidden = !vis;
+    if (!vis) continue;
+    if (m.old) {
+      n.style.opacity = cp > 0 ? 1 - cp : '';
+      n.style.filter = cp > 0 ? `blur(${(cp * 3).toFixed(2)}px)` : '';
+      n.style.transform = cp > 0 ? `scale(${1 - cp * 0.08})` : '';
+    }
+    if (m.who === 'ai') {
+      const th = m.thinking;
+      const answering = t >= m.ss;
+      m.dots.hidden = answering || (th && t >= th.start);
+      m.txt.hidden = !answering;
+      if (answering) setText(m.txt, m.text.slice(0, Math.ceil(m.text.length * prog(t, m.ss, m.se))));
+      if (th) {
+        m.think.hidden = t < th.start;
+        const done = t >= th.end;
+        m.think.classList.toggle('done', done);
+        setText(m.thHead, done ? `Thought for ${Math.round(th.end - th.start)} s · High effort` : 'Thinking · High effort');
+        setText(m.thCount, fmt(th.tokens * prog(t, th.start, th.end)) + ' tokens');
+        for (const li of m.thLines) {
+          li.hidden = t < li._start;
+          if (!li.hidden) setText(li, li._full.slice(0, Math.ceil(li._full.length * prog(t, li._start, li._start + 2.6))));
+        }
+      }
+    } else if (m.who === 'sys') {
+      const done = t >= m.after;
+      setText(n, done ? m.textAfter : m.text);
+      n.classList.toggle('done', done);
+    }
+  }
+  const input = $('#input');
+  if (typing) {
+    const s = typing.text.slice(0, Math.ceil(typing.text.length * prog(t, typing.t, typing.sent - 0.3)));
+    setText($('#typed'), s);
+  }
+  $('#ph').hidden = !!typing;
+  $('#typed').hidden = !typing;
+  $('#caret').hidden = !typing;
+  input.classList.toggle('typing', !!typing);
+  $('#send').classList.toggle('on', !!typing && t > typing.sent - 0.3);
+}
+
+function renderWindow(t) {
+  const u = usage(t);
+  const order = [['i', u.instr], ['s', u.summary], ['f', u.files], ['c', u.conv], ['k', u.think]];
+  let idx = 0;
+  for (const [k, v] of order) {
+    let n = Math.round(v / 1000);
+    if (k === 'c' && v > 0) n = Math.max(1, n);
+    for (let j = 0; j < n && idx < 200; j++) {
+      const c = cells[idx++]; const want = 'cell ' + k;
+      if (c._c !== want) { c.className = want; c._c = want; }
+    }
+  }
+  for (; idx < 200; idx++) { const c = cells[idx]; if (c._c !== 'cell') { c.className = 'cell'; c._c = 'cell'; } }
+
+  const pct = u.total / WINDOW;
+  setText($('#roNum'), fmt(u.total));
+  setText($('#roPct'), Math.round(pct * 100) + '%');
+  [u.instr, u.summary, u.files, u.conv, u.think].forEach((v, i) => { barParts[i].style.width = (v / WINDOW * 100).toFixed(2) + '%'; });
+  const pill = $('#pill');
+  const state = pct >= 0.85 ? 'full' : pct >= 0.6 ? 'warn' : '';
+  pill.className = 'pill' + (state ? ' ' + state : '');
+  setText(pill, state === 'full' ? 'Almost full' : state === 'warn' ? 'Filling up' : 'Plenty of room');
+  return pct;
+}
+
+function render(t) {
+  const ch = CHAPTERS.filter((c) => c.t <= t).pop();
+  setText($('#chapNum'), ch.n);
+  setText($('#chapName'), ch.name);
+
+  const titleO = 1 - prog(t, 8.8, 10.2);
+  const ovT = $('#ovTitle'); ovT.style.opacity = titleO; ovT.hidden = titleO <= 0;
+  const recapO = prog(t, 228, 229.2);
+  const ovR = $('#ovRecap'); ovR.style.opacity = recapO; ovR.hidden = recapO <= 0;
+  ovR.style.pointerEvents = recapO > 0.9 ? 'auto' : 'none';
+
+  const mode = MODES.filter(([s]) => s <= t).pop()[1];
+  for (const k in modes) modes[k].classList.toggle('on', k === mode);
+
+  for (const r of reveal) { const on = t >= r.at; if (r.e._on !== on) { r.e.classList.toggle('on', on); r.e._on = on; } }
+
+  renderChat(t);
+  const pct = renderWindow(t);
+
+  const co = CALLOUTS.find(([s, e]) => t >= s && t < e);
+  const html = co ? co[2] : '';
+  if ($callout._h !== html) { $callout.innerHTML = html; $callout._h = html; }
+
+  const eff = t < 204.7 ? 2 : t < 207.5 ? 0 : t < 210.2 ? 1 : 2;
+  $('#knob').style.transform = `translateX(${eff * 120}px)`;
+  segSpans.forEach((s, i) => s.classList.toggle('cur', i === eff));
+  eRows.forEach((r, i) => r.classList.toggle('cur', t >= 204.7 && i === eff));
+
+  const cue = CUES.find(([s, e]) => t >= s && t < e);
+  $subText.hidden = !captions || !cue;
+  if (cue) setText($subText, cue[2]);
+
+  Sound.update(pct, prog(t, 0, 2.5) * (1 - prog(t, 258, 263.5)), t >= 10 && t < 254);
+
+  const seek = $('#seek');
+  if (document.activeElement !== seek || !scrubbing) seek.value = t.toFixed(1);
+  seek.style.setProperty('--p', (t / DUR * 100).toFixed(2) + '%');
+  setText($('#time'), `${mmss(t)} / ${mmss(DUR)}`);
+  chapterBtns.forEach((b, i) => b.setAttribute('aria-current', CHAPTERS[i] === ch ? 'true' : 'false'));
+}
+
+/* ---------------- player ---------------- */
+let t = 0, playing = false, last = null, speed = 1, scrubbing = false, dirty = true;
+const SPEEDS = [1, 1.25, 1.5, 0.75];
+const ICON_PLAY = '<path d="M7 4.5l13 7.5-13 7.5z" fill="currentColor"/>';
+const ICON_PAUSE = '<rect x="6" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/><rect x="13.8" y="4.5" width="4.2" height="15" rx="1" fill="currentColor"/>';
+
+function syncUI() {
+  $('#playIcon').innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+  $('#playBtn').setAttribute('aria-label', playing ? 'Pause' : 'Play');
+  $('#bigplay').hidden = playing;
+  $('#bigplay').classList.toggle('poster', t <= 0.05);
+  setText($('#bigLabel'), t <= 0.05 ? 'Play with sound' : t >= DUR - 0.05 ? 'Watch again' : 'Resume');
+}
+function play() {
+  if (t >= DUR - 0.05) t = 0;
+  playing = true; last = null; dirty = true;
+  Sound.start(); syncUI();
+}
+function pause() { playing = false; Sound.pause(); syncUI(); }
+function toggle() { playing ? pause() : play(); }
+function seekTo(v) { t = clamp(v, 0, DUR); dirty = true; syncUI(); }
+
+function frame(now) {
+  if (playing) {
+    const dt = last == null ? 0 : Math.min(0.1, (now - last) / 1000);
+    last = now;
+    const prev = t;
+    t = Math.min(DUR, t + dt * speed);
+    if (t - prev < 0.5) for (const [et, name] of EVENTS) if (et > prev && et <= t) Sound.fx(name);
+    if (t >= DUR) pause();
+    dirty = true;
+  }
+  if (dirty) { render(t); dirty = false; }
+  requestAnimationFrame(frame);
+}
+
+// scale the 1280x720 stage to fit the screen
+const screen = $('#screen'), stage = $('#stage');
+new ResizeObserver(() => {
+  const w = screen.clientWidth, h = screen.clientHeight;
+  const s = Math.min(w / 1280, h / 720);
+  stage.style.transform = `translate(${(w - 1280 * s) / 2}px, ${(h - 720 * s) / 2}px) scale(${s})`;
+}).observe(screen);
+
+// chapter ticks, chapter list, transcript
+const ticks = $('#ticks');
+CHAPTERS.slice(1).forEach((c) => { const i = el('i'); i.style.left = (c.t / DUR * 100) + '%'; ticks.append(i); });
+const chapterBtns = CHAPTERS.map((c) => {
+  const li = el('li'), b = el('button', 'chbtn'); b.type = 'button';
+  const body = el('span');
+  body.append(el('span', 'nm', (c.n ? c.n + ' · ' : '') + c.name), el('span', 'bl', c.blurb));
+  b.append(el('span', 'tm', mmss(c.t)), body);
+  b.addEventListener('click', () => { seekTo(c.t + 0.01); screen.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
+  li.append(b); $('#chapters').append(li);
+  return b;
+});
+const tr = $('#transcript');
+CHAPTERS.forEach((c, i) => {
+  const end = CHAPTERS[i + 1] ? CHAPTERS[i + 1].t : DUR;
+  const sec = el('div', 'tr-ch');
+  sec.append(el('h3', null, (c.n ? c.n + ' · ' : '') + c.name));
+  CUES.filter(([s]) => s >= c.t - 0.6 && s < end - 0.6).forEach(([s, , text]) => {
+    const b = el('button', 'tr-line'); b.type = 'button';
+    b.append(el('span', 'tm', mmss(s)), el('span', null, text));
+    b.addEventListener('click', () => { seekTo(s); screen.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); });
+    sec.append(b);
+  });
+  tr.append(sec);
+});
+
+// controls
+screen.addEventListener('click', toggle);
+$('#bigplay').addEventListener('click', (e) => { e.stopPropagation(); play(); });
+$('#replay').addEventListener('click', (e) => { e.stopPropagation(); seekTo(0); play(); });
+$('#playBtn').addEventListener('click', toggle);
+const seek = $('#seek');
+seek.addEventListener('input', () => { scrubbing = true; seekTo(+seek.value); });
+seek.addEventListener('change', () => { scrubbing = false; });
+$('#speedBtn').addEventListener('click', () => {
+  speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
+  setText($('#speedBtn'), speed + '×');
+});
+function toggleCC() { captions = !captions; $('#ccBtn').setAttribute('aria-pressed', String(captions)); dirty = true; }
+$('#ccBtn').addEventListener('click', toggleCC);
+let muted = false;
+function toggleMute() {
+  muted = !muted; Sound.setMuted(muted);
+  $('#muteBtn').setAttribute('aria-pressed', String(muted));
+  $('#muteBtn').setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+  $('#volIcon').innerHTML = muted
+    ? '<path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/>'
+    : '<path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>';
+}
+$('#muteBtn').addEventListener('click', toggleMute);
+const vol = $('#vol');
+vol.style.setProperty('--p', '80%');
+vol.addEventListener('input', () => { Sound.setVolume(+vol.value); vol.style.setProperty('--p', vol.value * 100 + '%'); if (muted && +vol.value > 0) toggleMute(); });
+const player = $('#player');
+function toggleFS() {
+  try {
+    const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if (fsEl) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else {
+      const req = player.requestFullscreen || player.webkitRequestFullscreen;
+      const p = req && req.call(player);
+      if (p && p.catch) p.catch(() => {});
+    }
+  } catch (e) { /* full screen is optional */ }
+}
+$('#fsBtn').addEventListener('click', toggleFS);
+
+window.addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  const onSlider = tag === 'input';
+  const onButton = tag === 'button' || tag === 'summary';
+  const k = e.key;
+  if ((k === ' ' || k === 'k' || k === 'K') && !onButton) { e.preventDefault(); toggle(); }
+  else if ((k === 'ArrowRight' || k === 'ArrowLeft') && !onSlider) { e.preventDefault(); seekTo(t + (k === 'ArrowRight' ? 5 : -5)); }
+  else if (k === 'c' || k === 'C') toggleCC();
+  else if (k === 'm' || k === 'M') toggleMute();
+  else if (k === 'f' || k === 'F') toggleFS();
+});
+
+syncUI();
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
